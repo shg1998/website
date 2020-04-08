@@ -1,0 +1,2 @@
+1. we use "toastr" for showing messages to user
+(this url: "https://github.com/CodeSeven/toastr")
