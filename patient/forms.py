@@ -14,10 +14,9 @@ class ReceptionForm(forms.ModelForm):
             'sex',
             'blood_type',
             'previous_test_results',
-            # 'doctor',
             'prescription',
             'hospital',
             'imaging_center',
-            'document',
-            'annotations',
+            # 'document',
+            # 'annotations',
         ]

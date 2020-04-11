@@ -1,22 +1,22 @@
 from django.db import models
 from django.conf import settings
-import json
 
 
 def document_location(instance, filename):
     
-    file_path = 'static/patient/{doctor_id}/{patient_name}-{document_name}'.format(
-        doctor_id = str(instance.doctor.id),
-        patient_name = str(instance.name),
+    file_path = 'patient/{doctor_id}/{patient_name}/{document_name}'.format(
+        doctor_id = str(instance.patient.doctor.id),
+        patient_name = str(instance.patient.name),
         document_name = filename
     )
-    # file_path = f"patient/{instance.doctor.id}/{filename}"
-
     return file_path
 
 
 class info(models.Model):
 
+    def __str__(self):
+        return self.name
+    # owner                    = models.ForeignKey(settings.AUTH_USER_MODEL)
     name                    = models.CharField(max_length=150)
     owner                   = models.CharField(max_length=150, default='some')
     national_id             = models.IntegerField(default=1)
@@ -31,15 +31,25 @@ class info(models.Model):
     prescription            = models.TextField(default='some')
     hospital                = models.CharField(max_length=150, default='some')
     imaging_center          = models.CharField(max_length=150, default='some')
-    document                = models.FileField(upload_to=document_location, default='/test.jpg', null=False, blank=False)
-    annotations             = models.CharField(max_length=500, default='    ')
+    # document                = models.FileField(upload_to=document_location, null=False, blank=False)
+    # annotations             = models.CharField(max_length=500, default='    ')
 
-    def set_points(self, x):
-        self.annotations = json.dumps(x)
 
-    def get_points(self):
-        return json.loads(self.annotations)
-
+class image(models.Model):
+    # owner        = models.ForeignKey(settings.AUTH_USER_MODEL)
+    patient     = models.ForeignKey(info, on_delete=models.CASCADE)
+    document    = models.FileField(upload_to=document_location, null=False, blank=False)
 
     def __str__(self):
-        return self.name
+        return self.patient.name
+
+
+class point(models.Model):
+    # owner  = models.ForeignKey(settings.AUTH_USER_MODEL)
+    image = models.ForeignKey(image, on_delete=models.CASCADE)
+    x     = models.IntegerField()
+    y     = models.IntegerField()
+    point = str(x) + " " + str(y)
+
+    def __str__(self):
+        return self.point

@@ -1,22 +1,34 @@
 from rest_framework import serializers
 
-from patient.models import info 
+from patient.models import info, image, point
 
-class infoSerializer(serializers.ModelSerializer):
+class InfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = info
         fields = [  'name',
-                    'owner',
-                    'national_id',
-                    'id_num',
-                    'age',
-                    'weight',
-                    'sex',
-                    'blood_type',
-                    'previous_test_results',
                     'doctor',
-                    'prescription',
-                    'hospital',
                     'imaging_center',
-                    'document',
                 ]
+
+
+class PointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = point
+        fields = [
+            'x',
+            'y',
+        ]
+
+
+class PointUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = point    
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = image
+        fields = [
+            'patient',
+            'document',
+        ]

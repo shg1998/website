@@ -10,7 +10,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls', namespace='dashboard')),
 
     # api urls
-    path('api/patient/', include('patient.api.urls', namespace='patient_api')),
+    path('api/patient/', include('patient.api.urls', namespace='patient-api')),
 ]
 
 if settings.DEBUG:
