@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card-deck card-columns" >
+    {% for patient in patients %}
+    <a href="{% url 'patient:patientDetail' pk=patient.pk %}" style="margin: 15px;">
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img src="/media/patient.jpg" class="card-img" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"> Name: {{ patient.name }}</h5>  
+              <h5> Doctor: {{ patient.doctor }}</h5>
+              <p class="card-text"> Prescription: <br> {{ patient.prescription }}</p>
+              <p class="card-text"><small class="text-muted">Visit Date : {{ patient.date_visited }}</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+   
+    {% endfor %}
+</div>
+
+
+{% endblock %}
