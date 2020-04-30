@@ -1,6 +1,6 @@
-{% extends "page.html" %}
+{% extends 'base.html' %}
 
-{% block patient_list %}
+{% block content %}
 
 <div class="card-deck card-columns" >
     {% for patient in patients %}
@@ -13,7 +13,7 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title"> Name: {{ patient.name }}</h5>  
-              <h5> Doctor: {{ patient.doctor.username }}</h5>
+              <h5> Doctor: {{ patient.doctor }}</h5>
               <p class="card-text"> Prescription: <br> {{ patient.prescription }}</p>
               <p class="card-text"><small class="text-muted">Visit Date : {{ patient.date_visited }}</small></p>
             </div>

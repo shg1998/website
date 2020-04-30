@@ -1,13 +1,90 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block content %}
+{% block login %}
+<div class="container">
 
-    <form method = "POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">login</button>
-    </form>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-    or <a href="/register"> Register </a>
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                  </div>
+                  
+                  <form method="POST" class="login100-form validate-form">
+                    {% csrf_token %}
+                    
+                    <!-- <div class="form-group">
+                      <input name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                    </div>
+                    <div class="form-group">
+                      <input name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                    </div> -->
+          
+                    <div class="wrap-input100 validate-input form-group" data-validate = "Valid email is: a@b.c">
+                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." name="username">
+                      <span class="focus-input100" data-placeholder="Email"></span>
+                    </div>
+        
+
+                    <div class="wrap-input100 validate-input form-group" data-validate="Enter password">
+                      <span class="btn-show-pass">
+                        <i class="zmdi zmdi-eye"></i>
+                      </span>
+                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" name="password">
+                      <span class="focus-input100" data-placeholder="Password"></span>
+                    </div>
+          
+                    <div class="container-login100-form-btn">
+                      <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <button class="btn btn-primary btn-user btn-block">
+                          Login
+                        </button>
+                      </div>
+                    </div>
+          
+                      <div class="text-center p-t-115">
+                      <span class="txt1">
+                        Don’t have an account?
+                      </span>
+          
+                      <a class="txt2" href="/register">
+                        Sign Up
+                      </a>
+                    </div>
+
+                    <hr>
+                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                      <i class="fab fa-google fa-fw"></i> Login with Google
+                    </a>
+                  </form>
+                  
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="forgot-password.html">Forgot Password?</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" href="/register">Create an Account!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 {% endblock %}

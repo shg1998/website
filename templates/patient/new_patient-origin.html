@@ -1,7 +1,7 @@
-{% extends 'page.html' %}
+{% extends 'base.html' %}
 
 {% load bootstrap %}
-{% block new_patient %}
+{% block content %}
 
 <form method="POST" enctype="multipart/form-data" style="padding-bottom: 40%;">
     {% csrf_token %}
