@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 
 
 def document_location(instance, filename):
@@ -47,9 +48,10 @@ class image(models.Model):
 class point(models.Model):
     # owner  = models.ForeignKey(settings.AUTH_USER_MODEL)
     image = models.ForeignKey(image, on_delete=models.CASCADE)
-    x     = models.IntegerField()
-    y     = models.IntegerField()
-    point = str(x) + " " + str(y)
+    point = JSONField(default=dict)
+    # x     = models.IntegerField()
+    # y     = models.IntegerField()
+    # point = str(x) + " " + str(y)
 
     def __str__(self):
         return self.point
