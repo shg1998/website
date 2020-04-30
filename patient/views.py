@@ -8,7 +8,6 @@ from django.forms import modelformset_factory
 
 
 def new_patient(request):
-    # pointForm = modelformset_factory(queryset = point.objects.none(), point, fields=('image', 'x', 'y'), extra=2)
     imageForm = modelformset_factory(image, fields=('document',), extra=2)
     
     if request.method == "POST":
