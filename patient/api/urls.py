@@ -6,6 +6,7 @@ from patient.api.views import (
     PatientImagesListView,
     AddPointsView,
     PatientsListView,
+    pointViewset
      # patient_list, add_points, get_points, get_patients
     )
 app_name = 'patient'
@@ -18,4 +19,5 @@ urlpatterns = [
     # path("patientlist/",patient_list, name='patientList'),
     # path("addpoints/",add_points, name='addPoints'),
     path("<id>/add-points", AddPointsView.as_view(), name='add-points'),
+    path("point/", pointViewset, name='point'),
 ]

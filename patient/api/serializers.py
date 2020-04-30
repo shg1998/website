@@ -15,8 +15,7 @@ class PointSerializer(serializers.ModelSerializer):
     class Meta:
         model = point
         fields = [
-            'x',
-            'y',
+            'point',
         ]
 
 

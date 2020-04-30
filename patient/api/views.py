@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -42,29 +43,32 @@ class PatientImagesListView(ListAPIView):
         queryset = image.objects.filter(patient_id__exact=self.kwargs['pk'])
         return queryset
 
+class pointViewset(viewsets.ModelViewSet):
+    queryset = point.objects.all()
+    serializer_class = PointSerializer
 
 class AddPointsView(RetrieveUpdateDestroyAPIView):
 
     serializer_class = PointSerializer
     lookup_field = 'id'
     # lookup_url_kwarg = ''
-    def get_queryset(self):
-        queryset = point.objects.filter(image_id__exact=self.kwargs['id'])
-        return queryset
+    # def get_queryset(self):
+    #     queryset = point.objects.filter(image_id__exact=self.kwargs['id'])
+    #     return queryset
 
-    # serializer_class = PointSerializer
+    serializer_class = PointSerializer
     
 
-    # def get_queryset(self):
-    #     queryset = point.objects.filter(image__id__exact=self.kwargs['id'])
-    #     return(queryset)
+    def get_queryset(self):
+        queryset = point.objects.filter(image__id__exact=self.kwargs['id'])
+        return(queryset)
 
-    # def update(self, request    , *args, **kwargs):
-    #     queryset = point.objects.filter(image__id__exact=self.kwargs['id'])
-    #     serializer = PointSerializer(queryset, data=request.data,)
-    #     serializer.is_valid(raise_exception=True)
-    #     print(serializer)
-    #     serializer.save()
+    def update(self, request    , *args, **kwargs):
+        queryset = point.objects.filter(image__id__exact=self.kwargs['id'])
+        serializer = PointSerializer(queryset, data=request.data,)
+        serializer.is_valid(raise_exception=True)
+        print(serializer)
+        serializer.save()
 
 
 class DeletePointsView(DestroyAPIView):
