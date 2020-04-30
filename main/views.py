@@ -10,7 +10,7 @@ from account.forms import RegistrationForm
 
 def homepage(request):
     return render(request = request, 
-                  template_name = "main/home.html" ,
+                  template_name = "main/homepage.html" ,
                   context = {"latest": Latest.objects.all})
 
 
