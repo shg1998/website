@@ -76,6 +76,7 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
 
     def form_valid(self, form):
         form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
+        form.instance.points_imag = []
 
         if form.instance.image_imag and form.instance.image_imag.name.endswith('.dcm'):
             print('File is a dicom')
