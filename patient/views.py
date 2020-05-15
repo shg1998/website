@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView, ListView
 from .models import Patient, ImagePatient
+from base_app.CustomStuff import dicom_png,is_image
 
 
 class PatientListView(LoginRequiredMixin, ListView):
@@ -74,13 +75,20 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
     success_message = "image added"
     template_name = 'patient/image_add.html'
 
+    def post(self, request, *args, **kwargs):
+        image_file=request.FILES['image_imag']
+        print(type(image_file.file.read()))
+        if image_file.name.endswith('.dcm'):
+            image_file.file=dicom_png(image_file.file)
+            print(image_file.file, type(image_file.file), 1)
+        if is_image(image_file.file):
+            return super().post(request, *args, **kwargs)
+        self.object = None
+        return super().form_invalid(self.get_form())
+
     def form_valid(self, form):
         form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
         form.instance.points_imag = []
-
-        if form.instance.image_imag and form.instance.image_imag.name.endswith('.dcm'):
-            print('File is a dicom')
-
         return super().form_valid(form)
 
     def test_func(self):
@@ -122,7 +130,7 @@ class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMi
 
     def form_valid(self, form):
         p=form.instance.points_imag
-        form.instance.points_imag = [[p[i-1][0],p[i][0]] for i in range(1,len(p),2)]
+        form.instance.points_imag = [[p[i-1][0], p[i][0]] for i in range(1,len(p),2)]
         return super().form_valid(form)
 
     def test_func(self):
