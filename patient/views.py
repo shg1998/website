@@ -1,54 +1,131 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import ReceptionForm
-from .models import info, image, point
-from django.contrib import messages
-from django.forms import modelformset_factory
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import CreateView, DeleteView, DetailView, UpdateView, ListView
+from .models import Patient, ImagePatient
 
 
+class PatientListView(LoginRequiredMixin, ListView):
+    model = Patient
+    paginate_by = 5
 
-def new_patient(request):
-    imageForm = modelformset_factory(image, fields=('document',), extra=2)
-    
-    if request.method == "POST":
-        
-        form   = ReceptionForm(request.POST)
-        images = imageForm(request.POST, request.FILES)
-        
-        if form.is_valid() and images.is_valid():
-            patient = form.save(commit=False)
-            patient.doctor = request.user
-            patient.save()
-            image_set = images.save(commit=False)
-            for img in image_set:
-                img.patient = patient
-                img.save()
-            messages.success(request, "submitted")
-            return redirect("patient:patientList")
-    
-    form = ReceptionForm()
-    images = imageForm(queryset = image.objects.none())
-    return render(request, 'patient/new_patient.html', {'form':form, 'images': images})
+    def get_queryset(self):
+        return Patient.objects.filter(doctor_pati=self.request.user).order_by('-date_pati')
 
 
-def patient_list(request):
-    doctor = request.user
-    patients = info.objects.filter(doctor_id__exact=doctor)
-    # images = info.image_set.filter(doctor_id__exact=doctor)
-    return render(request, 'patient/patient_list.html', {'patients':patients})
+class PatientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Patient
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['image_class_list'] = ImagePatient.objects.filter(patient_imag=self.get_object())
+        return context
+
+    def test_func(self):
+        patient = self.get_object()
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False
 
 
-def patient_detail(request, pk):
-    details = info.objects.filter(id__exact=pk)
-    return render(request, 'patient/patient_detail.html', {'details':details})
+class PatientCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Patient
+    success_message = "patient created successfully"
+    fields = ['name_pati', 'description_pati']
+
+    def form_valid(self, form):
+        form.instance.doctor_pati = self.request.user
+        return super().form_valid(form)
 
 
-def hospital_list(request):
-    doctor = request.user
-    hospitals = info.objects.filter(doctor_id__exact=doctor)
-    return render(request, 'patient/patient_list.html', {'hospitals':hospitals})
+class PatientUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, UpdateView):
+    model = Patient
+    success_message = "patient updated successfully"
+    fields = ['name_pati', 'description_pati']
 
-def hospital_detail(request):
-    hospital = info.objects.filter(id__exact=pk)
-    hospital_det = info.objects.filter(doctor_id__exact=hospital)
-    return render(request, 'patient/hospital_detail.html', {'hospital':hospital_det})
+    def form_valid(self, form):
+        form.instance.doctor_pati = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        patient = self.get_object()
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False
+
+
+class PatientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Patient
+
+    def get_success_url(self):
+        return reverse('patient-create')
+
+    def test_func(self):
+        patient = self.get_object()
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False
+
+
+# ********* ImagesViews bellow *********
+class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
+    model = ImagePatient
+    fields = ['image_imag']
+    success_message = "image added"
+    template_name = 'patient/image_add.html'
+
+    def form_valid(self, form):
+        form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
+
+        if form.instance.image_imag and form.instance.image_imag.name.endswith('.dcm'):
+            print('File is a dicom')
+
+        return super().form_valid(form)
+
+    def test_func(self):
+        patient = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False
+
+
+class ImageDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ImagePatient
+    template_name = 'patient/image_confirm_delete.html'
+
+    def get_object(self):
+        object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[self.kwargs["image_id"]]
+        self.pk=object.pk
+        return object
+
+    def get_success_url(self):
+        return reverse('patient-detail', kwargs={'pk': self.kwargs["patient_id"]})
+
+    def test_func(self):
+        patient = self.get_object().patient_imag
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False
+
+
+class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+    model = ImagePatient
+    fields = ['points_imag']
+    success_message = "points edited"
+    template_name = 'patient/edit_points_form.html'
+
+    def get_object(self):
+        object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[self.kwargs["image_id"]]
+        self.pk=object.pk
+        return object
+
+    def form_valid(self, form):
+        p=form.instance.points_imag
+        form.instance.points_imag = [[p[i-1][0],p[i][0]] for i in range(1,len(p),2)]
+        return super().form_valid(form)
+
+    def test_func(self):
+        patient = self.get_object().patient_imag
+        if patient.doctor_pati == self.request.user:
+            return True
+        return False

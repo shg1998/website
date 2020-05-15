@@ -1,6 +1,5 @@
 from django.contrib import admin
-from . import models
+from .models import Patient, ImagePatient
 
-admin.site.register(models.info)
-admin.site.register(models.point)
-admin.site.register(models.image)
+admin.site.register(Patient)
+admin.site.register(ImagePatient)
