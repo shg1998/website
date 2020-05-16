@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView, ListView
 from .models import Patient, ImagePatient
-from base_app.CustomStuff import dicom_png,is_image
+from base_app.CustomStuff import overrideTempDicom
 
 
 class PatientListView(LoginRequiredMixin, ListView):
@@ -76,15 +76,10 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
     template_name = 'patient/image_add.html'
 
     def post(self, request, *args, **kwargs):
-        image_file=request.FILES['image_imag']
-        print(type(image_file.file.read()))
-        if image_file.name.endswith('.dcm'):
-            image_file.file=dicom_png(image_file.file)
-            print(image_file.file, type(image_file.file), 1)
-        if is_image(image_file.file):
-            return super().post(request, *args, **kwargs)
-        self.object = None
-        return super().form_invalid(self.get_form())
+        if request.FILES['image_imag'].name.endswith('.dcm'):
+            png_bytes=overrideTempDicom(request.FILES['image_imag'])
+
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
