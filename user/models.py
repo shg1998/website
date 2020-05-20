@@ -8,9 +8,9 @@ class Hospital(models.Model):
 
 
 class UserProfile(models.Model):
-    name_user = models.CharField(max_length=200)
-    image_user = models.ImageField(default='default.jpg', upload_to='profile_pic')
-    hosp_user = models.ManyToManyField(Hospital)
-    # type_user = models.??()
+    name_prof = models.CharField(max_length=200)
+    image_prof = models.ImageField(default='default.jpg', upload_to='profile_pic')
+    hosp_prof = models.ManyToManyField(Hospital)
+    # type_prof = models.??()
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_prof = models.OneToOneField(User, on_delete=models.CASCADE)

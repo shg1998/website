@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('base_app.urls')),
     path('', include('patient.urls')),
+    path('', include('user.urls')),
 ]
 
 if settings.DEBUG:
