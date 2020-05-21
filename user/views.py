@@ -5,14 +5,11 @@ from django.views.generic import DeleteView, DetailView, UpdateView
 from .models import UserProfile
 
 
-class ProfileDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = UserProfile
 
-    def test_func(self):
-        profile = self.get_object()
-        if profile.user_prof == self.request.user:
-            return True
-        return False
+    def get_object(self, queryset=None):
+        return UserProfile.objects.filter(user_prof=self.request.user).get()
 
 
 def register(request):
