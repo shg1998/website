@@ -3,10 +3,8 @@
     <h1 class="mb-3">list of patients</h1>
     {% for patient in patient_list %}
         <article class="media content-section">
-          <img class="rounded-circle article-img" src="#">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="#">{{ patient.doctor_pati }}</a>
               <small class="text-muted">{{ patient.date_pati|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'patient-detail' patient.id %}">{{ patient.name_pati }}</a></h2>
