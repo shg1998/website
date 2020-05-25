@@ -2,8 +2,9 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import DeleteView, DetailView, UpdateView
+from django.views.generic import DeleteView, DetailView, UpdateView, CreateView
 from .models import UserProfile, Hospital
+from .forms import UserRegisterForm
 
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
@@ -13,20 +14,19 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         return UserProfile.objects.filter(user_prof=self.request.user).get()
 
 
-def register(request):
-    from django.shortcuts import render, redirect
-    from django.contrib import messages
-    from .forms import UserRegisterForm
+class UserCreateView(SuccessMessageMixin, CreateView):
+    model = User
+    form_class = UserRegisterForm
+    template_name = "user/registration.html"
+    success_message = "patient created successfully"
 
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Your account has been created! You are now able to log in')
-            return redirect('login')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'user/userprofile_form.html', {'form': form})
+    def form_valid(self, form):
+        obj = form.save()
+        UserProfile(user_prof=obj).save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('login')
 
 
 class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, UpdateView):
