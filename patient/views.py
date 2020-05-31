@@ -8,7 +8,7 @@ from base_app.CustomStuff import overrideTempDicom
 
 class PatientListView(LoginRequiredMixin, ListView):
     model = Patient
-    paginate_by = 5
+    paginate_by = 8
 
     def get_queryset(self):
         return Patient.objects.filter(doctor_pati=self.request.user).order_by('-date_pati')

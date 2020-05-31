@@ -37,6 +37,9 @@ class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestM
     def get_object(self, queryset=None):
         return UserProfile.objects.filter(user_prof=self.request.user).get()
 
+    def get_success_url(self):
+        return reverse('profile-detail')
+
     def test_func(self):
         profile = self.get_object()
         if profile.user_prof == self.request.user:

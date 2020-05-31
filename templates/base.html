@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Dashboard</title>
+  <title>{{ user.userprofile.name_prof }} Dashboard</title>
 
   <link href="{% static 'main_costume.css' %}" rel="stylesheet" type="text/css">
   <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -34,6 +34,14 @@
             <div id="content">
                 {% include "includes/NotLogedinTopbar.html"%}
     {% endif %}
+
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
                 <div class="col-md-12">
                    {% block content %} {% endblock %}
                 </div>
