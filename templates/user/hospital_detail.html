@@ -11,9 +11,6 @@
           {% csrf_token %}
           <legend class="border-bottom mb-2">address</legend>
           <p> {{ object.address_hosp }} </p>
-          <div class="form-group">
-              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'profile-update' %}">Edit</a>
-          </div>
       </form>
     </div>
 {% endblock content %}
