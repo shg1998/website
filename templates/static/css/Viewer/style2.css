@@ -1,0 +1,21 @@
+html{
+    height: 700px;
+}
+.main{
+    background-color: black;
+}
+#canvas {
+    position: relative;
+    margin: auto;
+    width: 100%;
+    background: #ececec;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-top: 15px;
+}
+
+.btn-disabled {
+    color: rgb(0, 0, 0) !important;
+    cursor: default;
+}
+

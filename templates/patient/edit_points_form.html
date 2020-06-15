@@ -1,21 +1,175 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <article class="media content-section">
-                <div class="media-body">
-                    <img class="article-img2" src="{{imagepatient.image_imag.url}}">
+{#{% extends "base.html" %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% block content %}#}
+{#    <div class="content-section">#}
+{#        <form method="POST">#}
+{#            {% csrf_token %}#}
+{#            <article class="media content-section">#}
+{#                <div class="media-body">#}
+{#                    <img class="article-img2" src="{{imagepatient.image_imag.url}}">#}
+{#                </div>#}
+{#            </article>#}
+{#            <fieldset class="form-group">#}
+{#                <legend class="border-bottom mb-4">edit points</legend>#}
+{#                {{ form|crispy }}#}
+{#            </fieldset>#}
+{#            <div class="form-group">#}
+{#                <button class="btn btn-outline-info" type="submit">submit</button>#}
+{#            </div>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock content %}#}
+{##}
+{#{% load static %}#}
+
+
+<html lang="en">
+
+<script type="text/javascript" src="/static/js/Viewer/i18next.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/i18nextXHRBackend.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/i18nextBrowserLanguageDetector.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/jszip.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/konva.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/magic-wand-min.js"></script>
+<!-- Third party (viewer) -->
+<script type="text/javascript" src="/static/js/Viewer/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/nprogress.js"></script>
+
+<!-- decoders -->
+<script type="text/javascript" src="/static/js/Viewer/rle.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/jpx.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/util.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/arithmetic_decoder.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/jpg.js"></script>
+<script type="text/javascript" src="/static/js/Viewer/lossless-min.js"></script>
+<!-- dwv -->
+<script type="text/javascript" src="/static/js/Viewer/dwv.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/Viewer/style2.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/js/Viewer/jquery.min.js"></script>
+    <script src="/static/js/Viewer/popper.min.js"></script>
+    <script src="/static/js/Viewer/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/static/js/Viewer/bootstrap.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <title>simple dicom viewer!</title>
+</head>
+
+<body style="background-color: black">
+    <div class="container" style="margin-top:25px">
+        <div>
+            <button class="btn btn-success" id="undo" title="Undo">
+                Undo &nbsp;<i class="fa fa-undo"></i>
+            </button>
+            <button class="btn btn-success" onclick="set('Ruler')">Ruler &nbsp;
+                <i class='fas fa-ruler-vertical'></i>
+            </button>
+            <button class="btn btn-danger " onclick="set('Protractor')">Angle &nbsp;
+                <i class="fa fa-angle-up"></i>
+            </button>
+            <button class="btn btn-warning" onclick="set('Rectangle')">Rectangle &nbsp;
+                <i class="fa fa-pencil-square-o"></i>
+            </button>
+
+            <button class="btn btn-success" onclick="set('Ellipse')">Ellipse &nbsp;
+                <i class="fa fa-genderless" style="font-size: 24px;"></i>
+
+            </button>
+            <button class="btn btn-danger" onclick="set('FreeHand')">Freehand</button>
+            <button class="btn btn-warning" onclick="set('Arrow')">Arrow &nbsp;
+                <i class="fa fa-mouse-pointer"></i>
+            </button>
+            <button class="btn btn-info ">Add-viewer &nbsp;
+                <i class="fa fa-th-large"></i>
+
+            </button>
+            <button class="btn btn-info  punctuation">punctuation &nbsp;
+                <i class="fa fa-circle"></i></button>
+                <button class="btn btn-info  punctuation">punctuation &nbsp;
+                    <i class="fa fa-circle"></i></button>
+        </div>
+        <div class="row">
+            <!-- vertical tools:-->
+            <div class="col-md-2">
+                <button class="btn btn-success btn-block getImage" style="margin-top: 25px">Get Image
+                    &nbsp;
+                    <i class="fa fa-photo" style="font-size: 15pt;"></i>
+                </button>
+                <button class="btn btn-danger btn-block punctuation">punctuation &nbsp;
+                    <i class="fa fa-circle"></i>
+                </button>
+                <button class="btn btn-warning btn-block Erase-btn">Erase points &nbsp;
+                    <i class="fa fa-eraser"></i>
+                </button>
+                <button class="btn btn-info btn-block getPoints-btn ">Get points</button>
+                <button class="btn btn-light btn-block addPoints-btn">Add Points</button>
+                <div class="btn-group " style="margin-top: .5rem;">
+                    <button class="filter-btn brightness-remove btn btn-danger">-</button>
+                    <button class=" btn btn-secondary btn-disabled" disabled>Brightness</button>
+                    <button class="filter-btn brightness-add btn btn-danger">+</button>
                 </div>
-            </article>
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">edit points</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">submit</button>
+                <div class="btn-group " style="margin-top: .5rem; margin-bottom: 0.5rem;">
+                    <button class="filter-btn contrast-remove btn btn-danger">-</button>
+                    <button class=" btn btn-secondary btn-disabled" disabled>Contrasttt</button>
+                    <button class="filter-btn brightness-add btn btn-danger">+</button>
+                </div>
+
+                <button class="btn btn-success btn-block" id="revert-btn">Revert Effects &nbsp;
+                    <i class="fa fa-refresh"></i>
+                </button>
+                <button class="btn btn-warning btn-block " id="download-btn">Download &nbsp;
+                    <i class="fa fa-download"></i>
+                </button>
+                <button class="btn btn-info btn-block " id="download-btn">Download &nbsp;
+                    <i class="fa fa-download"></i></button>
+                <button class="btn btn-light btn-block " id="download-btn">Download &nbsp;
+                    <i class="fa fa-download"></i></button>
+                <button class="btn btn-danger btn-block " id="download-btn">Download &nbsp;
+                    <i class="fa fa-download"></i></button>
+                <button class="btn btn-info btn-block " id="download-btn">Download &nbsp;
+                    <i class="fa fa-download"></i></button>
             </div>
-        </form>
+            <div class="col-md-10">
+                <div class="col-md-10 m-auto">
+                    <div id="dwv" style="margin-top:8px">
+                        <div class="layerContainer" id="salam">
+
+                            <canvas class="imageLayer" id="canvas"></canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{% endblock content %}
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+    <script src="/static/js/Viewer/script.js"></script>
+    <script src="/static/js/Viewer/jquery.js"></script>
+    <script>
+
+        // base function to get elements
+        dwv.gui.getElement = dwv.gui.base.getElement;
+        // dwv.gui.displayProgress = function (percent) {};
+
+        // create the dwv app
+        var app = new dwv.App();
+        // initialise with the id of the container div
+        var options = {
+            "containerDivId": "dwv",
+
+
+        };
+        app.init(options);
+        // load dicom data
+        app.loadURLs(["http://s12.picofile.com/file/8398366550/founder_xray1.png"]);
+    </script>
+</body>
+
+</html>
