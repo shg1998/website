@@ -132,6 +132,8 @@ STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'templates/static'),
 )
 
+LOGIN_URL = '/login/'
+
 LOGIN_REDIRECT_URL = 'base-home'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
