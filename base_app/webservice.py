@@ -9,7 +9,7 @@ def getImage(request, patient_id, image_id):
     if object.patient_imag.doctor_pati != request.user: return True
 
     image_url=object.image_imag.url
-    return HttpResponse('<img src="'+image_url+'">')
+    return HttpResponse("http://127.0.0.1:8000/"+image_url)
 
 
 @login_required
