@@ -10,10 +10,10 @@ def overrideTempDicom(image_data):
     import numpy as np
     import png
     import pydicom
-    import io
+    from django.core.files.temp import TemporaryFile
 
     # *************
-    ds = pydicom.dcmread(image_data.file)
+    ds = pydicom.dcmread(image_data)
 
     shape = ds.pixel_array.shape
 
@@ -25,12 +25,14 @@ def overrideTempDicom(image_data):
 
     # Convert to uint
     image_2d_scaled = np.uint8(image_2d_scaled)
+
+    image_data.close()
     # *************
 
     # Write the PNG file
-    with io.BytesIO() as png_file:
-        w = png.Writer(shape[1], shape[0], greyscale=True)
-        w.write(png_file, image_2d_scaled)
+    png_file=TemporaryFile()
+    w = png.Writer(shape[1], shape[0], greyscale=True)
+    w.write(png_file, image_2d_scaled)
 
     return png_file
 

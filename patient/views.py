@@ -77,7 +77,11 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
 
     def post(self, request, *args, **kwargs):
         if request.FILES['image_imag'].name.endswith('.dcm'):
-            png_bytes=overrideTempDicom(request.FILES['image_imag'])
+            from sys import getsizeof
+            pngTempFile=overrideTempDicom(request.FILES['image_imag'].file)
+            request.FILES['image_imag'].file = pngTempFile
+            request.FILES['image_imag'].name = pngTempFile.name+"png"
+            request.FILES['image_imag'].size = getsizeof(pngTempFile)
 
         return super().post(request, *args, **kwargs)
 
