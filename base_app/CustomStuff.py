@@ -6,7 +6,7 @@ def is_image(file):
     except PIL.UnidentifiedImageError:
         return False
 
-def overrideTempDicom(image_data):
+def overwriteTempDicom(image_data):
     import numpy as np
     import png
     import pydicom
