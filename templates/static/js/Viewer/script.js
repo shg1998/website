@@ -1,89 +1,115 @@
 $(document).ready(function () {
     
+    var toggle = $('#ss_toggle');
+    var menu = $('#ss_menu');
+    var rot;
+    var scaleX;
+    var scaley;
+
+    $('#ss_toggle').on('click', function (ev) {
+        rot = parseInt($(this).data('rot')) - 180;
+        menu.css('transform', 'rotate(' + rot + 'deg)');
+        menu.css('webkitTransform', 'rotate(' + rot + 'deg)');
+        if ((rot / 180) % 2 == 0) {
+            //Moving in
+            toggle.parent().addClass('ss_active');
+            toggle.addClass('close');
+        } else {
+            //Moving Out
+            toggle.parent().removeClass('ss_active');
+            toggle.removeClass('close');
+        }
+        $(this).data('rot', rot);
+    });
+
+    menu.on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+        if ((rot / 180) % 2 == 0) {
+            $('#ss_menu div i').addClass('ss_animate');
+        } else {
+            $('#ss_menu div i').removeClass('ss_animate');
+        }
+    });
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
     var XPosition;
     var YPosition;
     var i = 0;
     var points = [];
     var j = 0;
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
-    let img = new Image();
+
+    var currentURL = document.URL;
+    var res = currentURL.split("/");
+
+    var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
+
+
+    WB=document.getElementById("WorkBench");
+
+    var canvas = document.getElementById('canvas');
+    context = canvas.getContext('2d');
+
+    img = new Image();
+    img.src = Url;
+    img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        WB.height=img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        canvas.removeAttribute("data-caman-id");
+    };
+
     let fileName = "";
     const revertBtn = document.getElementById("revert-btn");
     const downloadBtn = document.getElementById("download-btn");
     $(".drawDiv").removeAttr("style");
     $(".dkonvajs-content").removeAttr("style");
-    $(".getImage").click(function (e) {
-        //get image base64 & ... :
-        // $.ajax({
-        //                 url: URL,
-        //                 type: "GET",
-        //                 dataType: "html",
-        //                 async: false,
-        //                 crossDomain: "true",
-        //                 success: function(data, status) {
-        //                     console.log("Status: " + status + "\nData: " + data);
-        //                     result = data;
-        //
-        //                     /* creating image */
-        //                     var img = $('<img id="image_id">');
-        //                     img.attr("src", "data:image/gif;base64," + data);
-        //                     img.appendTo("#canvas");
-        //                 }
-        //             });
-        // get url of image (image address):
-        // $.ajax({
-        //     url: URL,
-        //     type: "GET",
-        //     dataType: "html",
-        //     async: false,
-        //     crossDomain: "true",
-        //     success: function(data, status) {
-        //         console.log("Status: " + status + "\nData: " + data);
-        //         result = data;
-        //
-        //         dwv.gui.getElement = dwv.gui.base.getElement;
-        //    dwv.gui.displayProgress = function (percent) {};
-        //
-        //    // create the dwv app
-        //    var app = new dwv.App();
-        //    // initialise with the id of the container div
-        //        var options = {
-        //            "containerDivId": "dwv",
-        //            "tools": ["Draw"],
-        //
-        //        };
-        //        app.init(options);
-        //    // load dicom data
-        //
-        //        app.loadURLs(["http://s11.picofile.com/file/8395924226/founder-xray1.png"]);
-        //     }
-        // });
-    });
-   
-    //add filter and effects:
-    document.addEventListener("click", e => {
-        if (e.target.classList.contains("filter-btn")) {
-            if (e.target.classList.contains("brightness-add")) {
-                Caman("#canvas", img, function () {
-                    this.brightness(5).render();
-                });
-            } else if (e.target.classList.contains("brightness-remove")) {
-                Caman("#canvas", img, function () {
-                    this.brightness(-5).render();
-                });
-            } else if (e.target.classList.contains("contrast-add")) {
-                Caman("#canvas", img, function () {
-                    this.contrast(5).render();
-                });
-            } else if (e.target.classList.contains("contrast-remove")) {
-                Caman("#canvas", img, function () {
-                    this.contrast(-5).render();
-                });
-            }
-        }
 
-    });
+    var result;
+    //get url of image (image address):
+    var req = new XMLHttpRequest();
+    req.open('GET',Url);
+    req.onload = function(){
+        console.log(req.responseText);
+    };
+    req.send();
+    // var str = document.Url;
+    // console.log(str);
+    
+
+
+
+        //add filter and effects:
+        document.addEventListener("click", e => {
+            if (e.target.classList.contains("filter-btn")) {
+                if (e.target.classList.contains("brightness-add")) {
+                    Caman("#canvas", img, function () {
+                        this.brightness(5).render();
+                    });
+                } else if (e.target.classList.contains("brightness-remove")) {
+                    Caman("#canvas", img, function () {
+                        this.brightness(-5).render();
+                    });
+                } else if (e.target.classList.contains("contrast-add")) {
+                    Caman("#canvas", img, function () {
+                        this.contrast(5).render();
+                    });
+                } else if (e.target.classList.contains("contrast-remove")) {
+                    Caman("#canvas", img, function () {
+                        this.contrast(-5).render();
+                    });
+                }
+            }
+
+        });
     $(".punctuation").click(function (e) {
 
         //for PunctuationPunctuation on canvas!
