@@ -133,7 +133,10 @@ $(document).ready(function () {
         }
         $.ajax({
             type: "POST",
+             headers:{ 'X-CSRFToken': 'csrftoken' }
+            ,
             url: Url_SetPoints,
+            
             // The key needs to match your method's input parameter (case-sensitive).
             data: JSON.stringify({ POINTS: points }),
             contentType: "application/json; charset=utf-8",
@@ -143,70 +146,9 @@ $(document).ready(function () {
                 alert(errMsg);
             }
         });
-        //#region first algo for ajax
-        //first method
-        // sendJSON(points);
-
-        //second method
-        //     let xhr = new XMLHttpRequest();
-        //     let url = "server";
-
-        //     // open a connection
-        //     xhr.open("POST", "addPoints", true);
-        //     var myJson = JSON.stringify(points);
-        //     xhr.setRequestHeader("Content-Type", "application/json");
-        //     xhr.onreadystatechange = function () {
-        //         if (xhr.readyState === 4 && xhr.status === 200) {
-        //             // Print received data from server
-        //             console.log(this.responseText);
-        //         }
-        //     };
-
-        //     xhr.send({
-        //         data: {
-        //             param: myJson
-        //         }
-        //     });
-        // });
-        //#endregion
+      
     });
-
-    //#region second algo for ajax
-    // function sendJSON(object) {
-    //     // Creating a XHR object
-    //     let xhr = new XMLHttpRequest();
-    //     let url = "addPoints.webService";
-
-    //     // open a connection
-    //     xhr.open("POST", url, true);
-
-    //     // Set the request header i.e. which type of content you are sending
-    //     xhr.setRequestHeader("Content-Type", "application/json");
-
-    //     // Create a state change callback
-    //     xhr.onreadystatechange = function () {
-    //         if (xhr.readyState === 4 && xhr.status === 200) {
-    //             // Print received data from server
-    //             console.log(this.responseText);
-    //         }
-    //     };
-
-    //     // Converting JSON data to string
-    //     var data = [];
-    //     for (let i = 0; i < object.length; i++) {
-    //         data[i] = JSON.stringify({
-    //             XPosition: object[i].xpos,
-    //             YPosition: object[i].ypos
-    //         });
-    //     }
-    //     // console.log(object[0].xpos);
-    //     // console.log(object[0].ypos);
-
-    //     // Sending data with the request
-    //     xhr.send(data);
-    // }
-
-    //#endregion
+  
 
     $(window).resize(function () {
         var currentHeight = $("#canvas").height();
@@ -336,11 +278,7 @@ $(document).ready(function () {
             var scalY = currentHeight / imgHeight;
             var scalX = currentWidth / imgWidth;
 
-            // var b = salam_height - currentHeight;
-            // var c = salam_width - currentWidth;
-
-            // console.log(b);
-            // console.log(c);
+            
 
 
             var color = "rgb(248, 248, 91)";
