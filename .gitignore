@@ -97,4 +97,4 @@ vevn/
 .venv/*
 .vscode/
 .vscode/*
-*/migrations/*
+**/migrations/
