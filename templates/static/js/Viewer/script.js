@@ -29,12 +29,15 @@ $(document).ready(function () {
     var res = currentURL.split("/");
     var Url_SetPoints = "http://127.0.0.1:8000/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
     var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
-
+    var Url_GetPoint ='http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
+    console.log(Url);
     // set image on canvas:
     img = new Image();
     img.src = Url;
     img.onload = function () {
         ImgOnload();
+        console.log(Url);
+        
     };
 
 
@@ -103,41 +106,24 @@ $(document).ready(function () {
     });
 
     $(".getPoints-btn").click(function (e) {
-        for (var j = 0; j < points.length; j++) {
-            scaleX[j] = (points[j].xpos) / window_width;
-            scaley[j] = (points[j].ypos) / window_height;
-            console.log("x = " + points[j].xpos + "\n" + "y = " + points[j].ypos);
-            console.log("scalex = " + scaleX[j] + "\n" + "scaley = " + scaley[j]);
-        }
-        // var getJSON = function (url, callback) {
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.open("GET", url, true);
-        //     xhr.responseType = "json";
-
-        //     xhr.onload = function () {
-        //         var status = xhr.status;
-
-        //         if (status == 200) {
-        //             callback(null, xhr.response);
-        //         } else {
-        //             callback(status);
-        //         }
-        //     };
-
-        //     xhr.send();
-        // };
-
-        //         getJSON("getPoints.webService", function (err, data) {
-        //             if (err != null) {
-        //                 console.error(err);
-        //             } else {
-        //                 var text = `Date: ${data.date}
-        // Time: ${data.time}
-        // Unix time: ${data.milliseconds_since_epoch}`;
-
-        //                 console.log(text);
-        //             }
-        //         });
+        // for (var j = 0; j < points.length; j++) {
+        //     scaleX[j] = (points[j].xpos) / window_width;
+        //     scaley[j] = (points[j].ypos) / window_height;
+        //     console.log("x = " + points[j].xpos + "\n" + "y = " + points[j].ypos);
+        //     console.log("scalex = " + scaleX[j] + "\n" + "scaley = " + scaley[j]);
+        // }
+        $.ajax({
+            type: "GET",
+            url: Url_GetPoint,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) { console.log("data");
+             },
+            failure: function (errMsg) {
+                alert(errMsg);
+            }
+        });
+        
     });
 
     $(".addPoints-btn").click(function (e) {
