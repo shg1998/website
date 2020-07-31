@@ -1,66 +1,55 @@
 $(document).ready(function () {
-    
+
+    var i = 0;
+    var j = 0;
+    var rot;
     var XPosition;
     var YPosition;
-    var i = 0;
+    var startPointX;
+    var startPointY;
     var points = [];
-    var j = 0;
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
-    let img = new Image();
+    var scaleX = [];
+    var scaley = [];
+    var Elements = [];
     let fileName = "";
+    var mousePosition;
+    var offset = [0, 0];
+    var isDown = false;
+    var pois = [];
+
+    WB = document.getElementById("WorkBench");
+    var canvas = document.getElementById('canvas');
+    context = canvas.getContext('2d');
     const revertBtn = document.getElementById("revert-btn");
     const downloadBtn = document.getElementById("download-btn");
     $(".drawDiv").removeAttr("style");
     $(".dkonvajs-content").removeAttr("style");
-    $(".getImage").click(function (e) {
-        //get image base64 & ... :
-        // $.ajax({
-        //                 url: URL,
-        //                 type: "GET",
-        //                 dataType: "html",
-        //                 async: false,
-        //                 crossDomain: "true",
-        //                 success: function(data, status) {
-        //                     console.log("Status: " + status + "\nData: " + data);
-        //                     result = data;
-        //
-        //                     /* creating image */
-        //                     var img = $('<img id="image_id">');
-        //                     img.attr("src", "data:image/gif;base64," + data);
-        //                     img.appendTo("#canvas");
-        //                 }
-        //             });
-        // get url of image (image address):
-        // $.ajax({
-        //     url: URL,
-        //     type: "GET",
-        //     dataType: "html",
-        //     async: false,
-        //     crossDomain: "true",
-        //     success: function(data, status) {
-        //         console.log("Status: " + status + "\nData: " + data);
-        //         result = data;
-        //
-        //         dwv.gui.getElement = dwv.gui.base.getElement;
-        //    dwv.gui.displayProgress = function (percent) {};
-        //
-        //    // create the dwv app
-        //    var app = new dwv.App();
-        //    // initialise with the id of the container div
-        //        var options = {
-        //            "containerDivId": "dwv",
-        //            "tools": ["Draw"],
-        //
-        //        };
-        //        app.init(options);
-        //    // load dicom data
-        //
-        //        app.loadURLs(["http://s11.picofile.com/file/8395924226/founder-xray1.png"]);
-        //     }
-        // });
-    });
-   
+    var toggle = $('#ss_toggle');
+    var menu = $('#ss_menu');
+
+
+    // get WebService Unique url for each Patient
+    var currentURL = document.URL;
+    var res = currentURL.split("/");
+    var Url_SetPoints = "http://127.0.0.1:8000/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
+    var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
+    var Url_GetPoint = 'http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
+    console.log(Url);
+    // set image on canvas:
+    img = new Image();
+    img.src = Url;
+    img.onload = function () {
+        ImgOnload();
+        console.log(Url);
+
+    };
+    var currentHeight = $("#canvas").height();
+    var currentWidth = $("#canvas").width();
+    var imgHeight = img.height;
+    var imgWidth = img.width;
+    var scalY = currentHeight / imgHeight;
+    var scalX = currentWidth / imgWidth;
+
     //add filter and effects:
     document.addEventListener("click", e => {
         if (e.target.classList.contains("filter-btn")) {
@@ -85,40 +74,10 @@ $(document).ready(function () {
 
     });
     $(".punctuation").click(function (e) {
-
-        //for PunctuationPunctuation on canvas!
-
-        $("#canvas").click(function (ev) {
-            mouseX = ev.pageX;
-            mouseY = ev.pageY;
-            // console.log(mouseX + " " + mouseY);
-            var color = "rgb(248, 248, 91)";
-            var size = "7px";
-            XPosition = mouseX;
-            YPosition = mouseY;
-
-            points.push({
-                xpos: XPosition,
-                ypos: YPosition
-            });
-            i++;
-            console.log(i);
-
-            $("body").append(
-                $(`<canvas id= ${i}></canvas>`)
-                    .css("position", "absolute")
-                    .css("top", mouseY + "px")
-                    .css("left", mouseX + "px")
-                    .css("width", size)
-                    .css("height", size)
-                    .css("background-color", color)
-                    .css("cursor", "move")
-                    .css("border-radius", "30px")
-            );
-        });
+        ProbeOnMainCanvas();
     });
 
-    //download:
+    //#region download operation
     downloadBtn.addEventListener("click", () => {
         //get the file extension:
         const fileExt = fileName.slice(-4);
@@ -147,112 +106,136 @@ $(document).ready(function () {
         //dispatch ev
         link.dispatchEvent(ev);
     }
+    //#endregion
+
+
     $(".Erase-btn").click(function (e) {
-        for (var k = 1; k <= i; k++) {
-            $(`#${k}`).remove();
-        }
+        Erase();
     });
+
     $(".getPoints-btn").click(function (e) {
-        for (var j = 0; j < points.length; j++) {
-            console.log("x = " + points[j].xpos + "\n" + "y = " + points[j].ypos);
-        }
-        // var getJSON = function (url, callback) {
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.open("GET", url, true);
-        //     xhr.responseType = "json";
+        var aa;
+        var bb;
+        var cc;
+        var dd;
+        // len is the count of points
+        var len;
+        var ll = [];
+        var cnt = 0;
+        $.ajax({
+            type: "GET",
+            url: Url_GetPoint,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                console.log(data + " / " + data.length);
 
-        //     xhr.onload = function () {
-        //         var status = xhr.status;
+                var array = JSON.parse(data);
+                console.log(array[0][0]);
+                var color = "rgb(248, 248, 91)";
+                var size = "7px";
+                for (let g = 0; g < array.length; g++) {
+                    points.push({
+                        xpos: (array[g][0]),
+                        ypos: (array[g][1])
+                    });
+                    $("#salam").append(
+                        $(`<div class="miniCanvas" id= ${g}  ></div>`)
+                            .css("position", "absolute")
+                            .css("top", array[g][1] * scalY + "px")
+                            .css("left", array[g][0] * scalX + "px")
+                            .css("width", size)
+                            .css("height", size)
+                            .css("background-color", color)
+                            .css("cursor", "move")
+                            .css("border-radius", "30px")
 
-        //         if (status == 200) {
-        //             callback(null, xhr.response);
-        //         } else {
-        //             callback(status);
-        //         }
-        //     };
+                    );
+                }
 
-        //     xhr.send();
-        // };
+            },
+            failure: function (errMsg) {
+                alert(errMsg);
+            }
+        });
 
-        //         getJSON("getPoints.webService", function (err, data) {
-        //             if (err != null) {
-        //                 console.error(err);
-        //             } else {
-        //                 var text = `Date: ${data.date}
-        // Time: ${data.time}
-        // Unix time: ${data.milliseconds_since_epoch}`;
 
-        //                 console.log(text);
-        //             }
-        //         });
+
     });
+
     $(".addPoints-btn").click(function (e) {
-        //first method
-        // sendJSON(points);
+        for (let i = 0; i < points.length; i++) {
 
-        //second method
-        //     let xhr = new XMLHttpRequest();
-        //     let url = "server";
+            console.log(points[i].xpos + "   " + points[i].ypos);
+        }
+        // xpos/scalX
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $.ajax({
+            type: "POST",
 
-        //     // open a connection
-        //     xhr.open("POST", "addPoints", true);
-        //     var myJson = JSON.stringify(points);
-        //     xhr.setRequestHeader("Content-Type", "application/json");
-        //     xhr.onreadystatechange = function () {
-        //         if (xhr.readyState === 4 && xhr.status === 200) {
-        //             // Print received data from server
-        //             console.log(this.responseText);
-        //         }
-        //     };
+            url: Url_SetPoints,
 
-        //     xhr.send({
-        //         data: {
-        //             param: myJson
-        //         }
-        //     });
-        // });
+            // The key needs to match your method's input parameter (case-sensitive).
+            data: JSON.stringify({ POINTS: points }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) { alert(data); },
+            failure: function (errMsg) {
+                alert(errMsg);
+            }
+        });
+
     });
 
-    // function sendJSON(object) {
-    //     // Creating a XHR object
-    //     let xhr = new XMLHttpRequest();
-    //     let url = "addPoints.webService";
 
-    //     // open a connection
-    //     xhr.open("POST", url, true);
+    $(window).resize(function () {
+        var currentHeight = $("#canvas").height();
+        var currentWidth = $("#canvas").width();
+        var imgHeight = img.height;
+        var imgWidth = img.width;
+        var scalY = currentHeight / imgHeight;
+        var scalX = currentWidth / imgWidth;
 
-    //     // Set the request header i.e. which type of content you are sending
-    //     xhr.setRequestHeader("Content-Type", "application/json");
 
-    //     // Create a state change callback
-    //     xhr.onreadystatechange = function () {
-    //         if (xhr.readyState === 4 && xhr.status === 200) {
-    //             // Print received data from server
-    //             console.log(this.responseText);
-    //         }
-    //     };
+        for (let i = 0; i < points.length; i++) {
 
-    //     // Converting JSON data to string
-    //     var data = [];
-    //     for (let i = 0; i < object.length; i++) {
-    //         data[i] = JSON.stringify({
-    //             XPosition: object[i].xpos,
-    //             YPosition: object[i].ypos
-    //         });
-    //     }
-    //     // console.log(object[0].xpos);
-    //     // console.log(object[0].ypos);
+            $(`#${i}`)
+                .css("top", points[i].ypos * scalY + "px")
+                .css("left", points[i].xpos * scalX + "px");
+            // //console.log(points[i].xpos + " " + points[i].ypos * currentHeight + "||" + points[i].xpos * window_width + " " + points[i].ypos * window_height);
+        }
+    });
 
-    //     // Sending data with the request
-    //     xhr.send(data);
-    // }
-
-    // for undo
+    //#region for undo
     $("#undo").click(function (e) {
-        $(`#${i - j}`).removeAttr("style");
-        j += 1;
-        console.log(j);
+        undo();
     });
+    $("#redo").click(function (e) {
+        redo();
+    });
+    function KeyPress(e) {
+        var evtobj = window.event ? event : e
+        if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
+            console.log("Ctrl+z");
+            undo();
+        }
+
+    }
+    document.onkeydown = KeyPress;
+    //#endregion
+
+    //#region Redo(TODO)
     // redo : Todo!
     //     $(".redo").click(function (e) { 
     //         $(`#${i - j}`).Attr("css", { backgroundColor: "gray", position: absolute ,  });
@@ -260,10 +243,334 @@ $(document).ready(function () {
     //         console.log(j);
 
     //     });
+
+
+
+    //#endregion
     revertBtn.addEventListener("click", e => {
         Caman("#canvas", img, function () {
             this.revert();
         });
     });
+
+    //#region  toggle btn
+    $('#ss_toggle').on('click', function (ev) {
+        rot = parseInt($(this).data('rot')) - 180;
+        menu.css('transform', 'rotate(' + rot + 'deg)');
+        menu.css('webkitTransform', 'rotate(' + rot + 'deg)');
+        if ((rot / 180) % 2 == 0) {
+            //Moving in
+            toggle.parent().addClass('ss_active');
+            toggle.addClass('close');
+        } else {
+            //Moving Out
+            toggle.parent().removeClass('ss_active');
+            toggle.removeClass('close');
+        }
+        $(this).data('rot', rot);
+    });
+
+
+    menu.on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+        if ((rot / 180) % 2 == 0) {
+            $('#ss_menu div i').addClass('ss_animate');
+        } else {
+            $('#ss_menu div i').removeClass('ss_animate');
+        }
+    });
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    //#endregion
+
+
+    //#region External Functions
+    function undo() {
+
+        $(`#${i - j}`).removeAttr("style");
+        if (i - j > 0) {
+            j += 1;
+            console.log(j);
+        }
+    }
+    function redo() {
+        $("#salam").append(
+            $(`<div class="miniCanvas" id= ${j}  ></div>`)
+                .css("position", "absolute")
+                .css("top", points[j].ypos + "px")
+                .css("left", points[j].xpos + "px")
+                .css("width", size)
+                .css("height", size)
+                .css("background-color", color)
+                .css("cursor", "move")
+                .css("border-radius", "30px")
+
+        );
+    }
+    function Erase() {
+        for (var k = 0; k < points.length; k++) {
+            $(`#${k}`).remove();
+        }
+    }
+    function ProbeOnMainCanvas() {
+        //for PunctuationPunctuation on canvas!
+        $("#canvas").click(function (ev) {
+            var pos = getMousePos(canvas, ev);
+            mousePX = pos.x;
+            mousePY = pos.y;
+            // console.log(mousePX);
+            // console.log(mousePY);
+
+            // canvas.width=salam_width;
+            // img.width=salam_width;
+            // img.height=salam_height;
+            var salam_width = $("#salam").width();
+            var salam_height = $("#salam").height();
+
+            var currentHeight = $("#canvas").height();
+            var currentWidth = $("#canvas").width();
+
+            // currentHeight=salam_height;
+            // currentWidth=salam_width;
+            var imgHeight = img.height;
+            var imgWidth = img.width;
+            var scalY = currentHeight / imgHeight;
+            var scalX = currentWidth / imgWidth;
+
+
+
+
+            var color = "rgb(248, 248, 91)";
+            var size = "7px";
+            XPosition = mousePX;
+            YPosition = mousePY;
+
+            points.push({
+                xpos: (XPosition / scalX),
+                ypos: (YPosition / scalY)
+            });
+
+            $("#salam").append(
+                $(`<div class="miniCanvas" id= ${i}  ></div>`)
+                    .css("position", "absolute")
+                    .css("top", mousePY + "px")
+                    .css("left", mousePX + "px")
+                    .css("width", size)
+                    .css("height", size)
+                    .css("background-color", color)
+                    .css("cursor", "move")
+                    .css("border-radius", "30px")
+
+            );
+            // Elements[i] = $(`#${i}`);
+            // $(".miniCanvas").mousedown(function (e) {
+            //     var id = this.id;
+            //     var ele=$(`#${id}`);
+            //     isDown = true;
+            //     offset = [
+            //         ele.offsetLeft - e.clientX,
+            //         ele.offsetTop - e.clientY
+            //     ];
+            // });
+            // $(".miniCanvas").mouseup(function () { 
+            //     isDown=false;
+            // });
+            // $(".miniCanvas").mousemove(function (e) { 
+            //     e.preventDefault();
+            //     if (isDown ) {
+            //         mousePosition = {
+
+            //             x : e.clientX,
+            //             y : e.clientY
+
+            //         };
+
+            //         var id = this.id;
+
+            //         $(`#${id}`)
+            //         .css("left", (mousePosition.x + offset[0]) + 'px')
+            //         .css("top",(mousePosition.y + offset[1]) + 'px');
+            //         console.log(mousePosition.x+" "+mousePosition.y);
+
+
+            //     }
+
+            // });
+             
+            // var m =document.getElementById("0");
+            //  m.addEventListener('mousedown', mouseDown, false);
+            //  $(window).addEventListener('mouseup', mouseUp, false);
+
+            i++;
+
+
+
+
+            // for (let i = 0; i < points.length; i++) {
+            //     console.log(points[i].xpos+" "+points[i].ypos);
+
+
+            // }
+
+
+        });
+    }
+    function salam() {
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var $canvas = $("#canvas");
+        var canvasOffset = $canvas.offset();
+        var offsetX = canvasOffset.left;
+        var offsetY = canvasOffset.top;
+        var scrollX = $canvas.scrollLeft();
+        var scrollY = $canvas.scrollTop();
+        var cw = canvas.width;
+        var ch = canvas.height;
+
+        // flag to indicate a drag is in process
+        // and the last XY position that has already been processed
+        var isDown = false;
+        var lastX;
+        var lastY;
+
+        // the radian value of a full circle is used often, cache it
+        var PI2 = Math.PI * 2;
+
+        // variables relating to existing circles
+        var circles = [];
+        var stdRadius = 5;
+        var draggingCircle = -1;
+
+        // clear the canvas and redraw all existing circles
+        function drawAll() {
+            ctx.clearRect(0, 0, cw, ch);
+            for (var i = 0; i < circles.length; i++) {
+                var circle = circles[i];
+                ctx.beginPath();
+                ctx.arc(circle.x, circle.y, circle.radius, 0, PI2);
+                ctx.closePath();
+                ctx.fillStyle = circle.color;
+                ctx.fill();
+            }
+        }
+
+        function handleMouseDown(e) {
+            // tell the browser we'll handle this event
+            e.preventDefault();
+            e.stopPropagation();
+
+            // save the mouse position
+            // in case this becomes a drag operation
+            lastX = parseInt(e.clientX - offsetX);
+            lastY = parseInt(e.clientY - offsetY);
+
+            // hit test all existing circles
+            var hit = -1;
+            for (var i = 0; i < circles.length; i++) {
+                var circle = circles[i];
+                var dx = lastX - circle.x;
+                var dy = lastY - circle.y;
+                if (dx * dx + dy * dy < circle.radius * circle.radius) {
+                    hit = i;
+                }
+            }
+
+            // if no hits then add a circle
+            // if hit then set the isDown flag to start a drag
+            if (hit < 0) {
+                circles.push({ x: lastX, y: lastY, radius: stdRadius, color: randomColor() });
+                drawAll();
+            } else {
+                draggingCircle = circles[hit];
+                isDown = true;
+            }
+
+        }
+
+        function handleMouseUp(e) {
+            // tell the browser we'll handle this event
+            e.preventDefault();
+            e.stopPropagation();
+
+            // stop the drag
+            isDown = false;
+        }
+
+        function handleMouseMove(e) {
+
+            // if we're not dragging, just exit
+            if (!isDown) { return; }
+
+            // tell the browser we'll handle this event
+            e.preventDefault();
+            e.stopPropagation();
+
+            // get the current mouse position
+            mouseX = parseInt(e.clientX - offsetX);
+            mouseY = parseInt(e.clientY - offsetY);
+
+            // calculate how far the mouse has moved
+            // since the last mousemove event was processed
+            var dx = mouseX - lastX;
+            var dy = mouseY - lastY;
+
+            // reset the lastX/Y to the current mouse position
+            lastX = mouseX;
+            lastY = mouseY;
+
+            // change the target circles position by the 
+            // distance the mouse has moved since the last
+            // mousemove event
+            draggingCircle.x += dx;
+            draggingCircle.y += dy;
+
+            // redraw all the circles
+            drawAll();
+        }
+
+        // listen for mouse events
+        $("#canvas").mousedown(function (e) { handleMouseDown(e); });
+        $("#canvas").mousemove(function (e) { handleMouseMove(e); });
+        $("#canvas").mouseup(function (e) { handleMouseUp(e); });
+        $("#canvas").mouseout(function (e) { handleMouseUp(e); });
+
+        //////////////////////
+        // Utility functions
+
+        function randomColor() {
+            return ('#' + Math.floor(Math.random() * 16777215).toString(16));
+        }
+    }
+    // for (let i = 0; i < points.length; i++) {
+    //     document.getElementById(`#${i}`).onmousedown = function () {
+    //         console.log('salam');
+    //     }
+    // }
+    function ImgOnload() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        WB.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        canvas.removeAttribute("data-caman-id");
+    }
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+    
+
+    //#endregion
 });
 
