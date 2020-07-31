@@ -1,3 +1,3 @@
 # website
-backend for Iran BMN project
+back-end and front-end for Iran BMN project
 "venv/scripts/python.exe" manage.py runserver
