@@ -10,16 +10,12 @@ $(document).ready(function () {
     var points = [];
     var scaleX = [];
     var scaley = [];
-    var Elements = [];
+    
     let fileName = "";
-    var mousePosition;
-    var offset = [0, 0];
-    var isDown = false;
     var pois = [];
 
     WB = document.getElementById("WorkBench");
     var canvas = document.getElementById('canvas');
-    var salam=document.getElementById("#salam");
     context = canvas.getContext('2d');
     const revertBtn = document.getElementById("revert-btn");
     const downloadBtn = document.getElementById("download-btn");
@@ -50,6 +46,7 @@ $(document).ready(function () {
     var imgWidth = img.width;
     var scalY = currentHeight / imgHeight;
     var scalX = currentWidth / imgWidth;
+
 
     //add filter and effects:
     document.addEventListener("click", e => {
@@ -89,7 +86,7 @@ $(document).ready(function () {
         if (fileExt === ".jpg" || fileExt === "png") {
             newFileName = fileName.substring(0, fileName.length - 4) + "-edited.jpg";
         }
-        
+
         //call download
         download(canvas, newFileName);
     });
@@ -210,6 +207,7 @@ $(document).ready(function () {
 
 
         for (let i = 0; i < points.length; i++) {
+            console.log(points[i].xpos + " " + i);
 
             $(`#${i}`)
                 .css("top", points[i].ypos * scalY + "px")
@@ -221,9 +219,6 @@ $(document).ready(function () {
     //#region for undo
     $("#undo").click(function (e) {
         undo();
-    });
-    $("#redo").click(function (e) {
-        redo();
     });
     function KeyPress(e) {
         var evtobj = window.event ? event : e
@@ -296,26 +291,9 @@ $(document).ready(function () {
 
     //#region External Functions
     function undo() {
-
         $(`#${i - j}`).removeAttr("style");
-        if (i - j > 0) {
-            j += 1;
-            console.log(j);
-        }
-    }
-    function redo() {
-        $("#salam").append(
-            $(`<div class="miniCanvas" id= ${j}  ></div>`)
-                .css("position", "absolute")
-                .css("top", points[j].ypos + "px")
-                .css("left", points[j].xpos + "px")
-                .css("width", size)
-                .css("height", size)
-                .css("background-color", color)
-                .css("cursor", "move")
-                .css("border-radius", "30px")
-
-        );
+        j += 1;
+        console.log(j);
     }
     function Erase() {
         for (var k = 0; k < points.length; k++) {
@@ -359,7 +337,7 @@ $(document).ready(function () {
                 xpos: (XPosition / scalX),
                 ypos: (YPosition / scalY)
             });
-
+            
             $("#salam").append(
                 $(`<div class="miniCanvas" id= ${i}  ></div>`)
                     .css("position", "absolute")
@@ -372,54 +350,12 @@ $(document).ready(function () {
                     .css("border-radius", "30px")
 
             );
-            // Elements[i] = $(`#${i}`);
-            // $(".miniCanvas").mousedown(function (e) {
-            //     var id = this.id;
-            //     var ele=$(`#${id}`);
-            //     isDown = true;
-            //     offset = [
-            //         ele.offsetLeft - e.clientX,
-            //         ele.offsetTop - e.clientY
-            //     ];
-            // });
-            // $(".miniCanvas").mouseup(function () { 
-            //     isDown=false;
-            // });
-            // $(".miniCanvas").mousemove(function (e) { 
-            //     e.preventDefault();
-            //     if (isDown ) {
-            //         mousePosition = {
-
-            //             x : e.clientX,
-            //             y : e.clientY
-
-            //         };
-
-            //         var id = this.id;
-
-            //         $(`#${id}`)
-            //         .css("left", (mousePosition.x + offset[0]) + 'px')
-            //         .css("top",(mousePosition.y + offset[1]) + 'px');
-            //         console.log(mousePosition.x+" "+mousePosition.y);
-
-
-            //     }
-
-            // });
-             
-            // var m =document.getElementById("0");
-            //  m.addEventListener('mousedown', mouseDown, false);
-            //  $(window).addEventListener('mouseup', mouseUp, false);
-
             i++;
-
-
-
 
             // for (let i = 0; i < points.length; i++) {
             //     console.log(points[i].xpos+" "+points[i].ypos);
-
-
+                
+                
             // }
 
 
@@ -570,7 +506,6 @@ $(document).ready(function () {
             y: evt.clientY - rect.top
         };
     }
-    
 
     //#endregion
 });
