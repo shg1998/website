@@ -247,27 +247,50 @@
 
         <!-- vertical left side tab Menu Design -->
         <div class="row" style="margin-left: 0.08rem; margin-top: 0.5rem; ">
-            <div class="col-md-3" id="WorkBench"
-                style="background-color: gray ; border-radius: 1.5rem; overflow-y: auto; ">
+
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" id="WorkBench"
+                style="background-color: white ; border-radius: 6px; overflow-y: auto; ">
+
                 <div class="tab">
                     <button class="tablinks" id="firsst" onclick="openSection(event, 'London')">
-                        <i class="fa fa-desktop" style="font-size: 3.8rem"></i>
+                        <img src="/static/img/1.png.png" height="46" width="46" style="margin: 8px">
+                        <!--<i class="fa fa-desktop" style="font-size: 3.8rem"></i>-->
                     </button>
                     <button class="tablinks" onclick="openSection(event, 'Paris')">
-                        <i class="fa fa-wrench" style="font-size: 3.8rem"></i>
+                        <img src="/static/img/2.png.png" height="46" width="46" style="margin: 8px">
+                        <!--<i class="fa fa-wrench" style="font-size: 3.8rem"></i>-->
                     </button>
                     <button class="tablinks" onclick="openSection(event, 'Tokyo')" style="direction: rtl; ">
-                        <i class="material-icons" style="font-size: 3.6rem;">content_paste</i>
+                        <img src="/static/img/3.png.png" height="46" width="46" style="margin: 8px">
+                        <!--<i class="material-icons" style="font-size: 3.6rem;">content_paste</i>-->
                     </button>
                 </div>
                 <!-- complete div for worktable section -->
                 <div id="London" class="tabcontent">
                     <img src="http://s12.picofile.com/file/8401129300/troy_2016_1024x674.jpg"
-                        style="width: 240px; height: 150px; align-items: 
-                    center; margin-left: -0.8rem;  border: 3.5px solid rgb(20, 54, 148); border-radius: 1rem; cursor: pointer;">
+                         style="
+                    width: 240px;
+                    height: 150px;
+                    align-items:
+                    center;
+                    margin-left: -0.8rem;
+                    margin-top: 20px;
+                     border: 3.5px solid rgb(20, 54, 148);
+                    border-radius: 3px;
+                    cursor: pointer;
+                    ">
                     <img src=" http://s13.picofile.com/file/8401129818/K1380843_Oscar_Smith0002_Copy_1024x919.jpg"
-                        style="width: 240px; height: 150px; align-items: 
-                    center; margin-left: -0.8rem; margin-top: 20px;  border: 3.5px solid rgb(20, 54, 148); border-radius: 1rem; cursor: pointer;">
+                         style="
+                    width: 240px;
+                    height: 150px;
+                    align-items:
+                    center;
+                    margin-left: -0.8rem;
+                    margin-top: 20px;
+                     border: 3.5px solid rgb(20, 54, 148); 
+                    border-radius: 3px;
+                    cursor: pointer;
+                    ">
                 </div>
                 <!-- complete div for Tools section -->
                 <div id="Paris" class="tabcontent">
@@ -277,6 +300,7 @@
                     <div class="Anotation">
                         <button class="btn  punctuation" style="margin-left: .7rem;">
                             <i class="fa fa-circle" style="color: black; font-size: 1.2rem;"></i>
+                            <!-- <img src="/static/img/ant/dot.png" height="25" width="25" > -->
                         </button>
                         <button class="btn" onclick="set('Ruler')">
                             <i class='fas fa-ruler-vertical' style="color: black; font-size: 1.8rem;"></i>
@@ -340,7 +364,7 @@
             </div>
 
             <!-- main canvas Container -->
-            <div class="col-md-9" style="padding: 0;">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style="padding: 0;">
                 <div class="">
                     <div id="dwv">
                         <div class="layerContainer" id="salam">

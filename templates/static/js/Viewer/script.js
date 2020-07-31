@@ -19,6 +19,7 @@ $(document).ready(function () {
 
     WB = document.getElementById("WorkBench");
     var canvas = document.getElementById('canvas');
+    var salam=document.getElementById("#salam");
     context = canvas.getContext('2d');
     const revertBtn = document.getElementById("revert-btn");
     const downloadBtn = document.getElementById("download-btn");
@@ -88,7 +89,7 @@ $(document).ready(function () {
         if (fileExt === ".jpg" || fileExt === "png") {
             newFileName = fileName.substring(0, fileName.length - 4) + "-edited.jpg";
         }
-
+        
         //call download
         download(canvas, newFileName);
     });
