@@ -38,14 +38,8 @@ $(document).ready(function () {
     img.onload = function () {
         ImgOnload();
         console.log(Url);
-
     };
-    var currentHeight = $("#canvas").height();
-    var currentWidth = $("#canvas").width();
-    var imgHeight = img.height;
-    var imgWidth = img.width;
-    var scalY = currentHeight / imgHeight;
-    var scalX = currentWidth / imgWidth;
+   
 
 
     //add filter and effects:
@@ -112,33 +106,30 @@ $(document).ready(function () {
     });
 
     $(".getPoints-btn").click(function (e) {
-        var aa;
-        var bb;
-        var cc;
-        var dd;
-        // len is the count of points
-        var len;
-        var ll = [];
-        var cnt = 0;
         $.ajax({
             type: "GET",
             url: Url_GetPoint,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                console.log(data + " / " + data.length);
-
+                console.log(data);
                 var array = JSON.parse(data);
                 console.log(array[0][0]);
-                var color = "rgb(248, 248, 91)";
+                var currentHeight = $("#canvas").height();
+                var currentWidth = $("#canvas").width();
+                var imgHeight = img.height;
+                var imgWidth = img.width;
+                var scalY = currentHeight / imgHeight;
+                var scalX = currentWidth / imgWidth;
+                var color = "red";
                 var size = "7px";
-                for (let g = 0; g < array.length; g++) {
+                for (let g = i; g < i+array.length; g++,i++) {
                     points.push({
                         xpos: (array[g][0]),
                         ypos: (array[g][1])
                     });
                     $("#salam").append(
-                        $(`<div class="miniCanvas" id= ${g}  ></div>`)
+                        $(`<div class="miniCanvas" id=${g}  ></div>`)
                             .css("position", "absolute")
                             .css("top", array[g][1] * scalY + "px")
                             .css("left", array[g][0] * scalX + "px")
@@ -147,8 +138,8 @@ $(document).ready(function () {
                             .css("background-color", color)
                             .css("cursor", "move")
                             .css("border-radius", "30px")
-
                     );
+                    
                 }
 
             },
@@ -225,12 +216,11 @@ $(document).ready(function () {
 
 
         for (let i = 0; i < points.length; i++) {
-            console.log(points[i].xpos + " " + i);
+           // console.log(points[i].xpos + " " + i);
 
             $(`#${i}`)
                 .css("top", points[i].ypos * scalY + "px")
                 .css("left", points[i].xpos * scalX + "px");
-            // //console.log(points[i].xpos + " " + points[i].ypos * currentHeight + "||" + points[i].xpos * window_width + " " + points[i].ypos * window_height);
         }
     });
 
@@ -311,7 +301,7 @@ $(document).ready(function () {
     function undo() {
         $(`#${i - j}`).removeAttr("style");
         j += 1;
-        console.log(j);
+        //console.log(j);
     }
     function Erase() {
         for (var k = 0; k < points.length; k++) {
@@ -324,12 +314,7 @@ $(document).ready(function () {
             var pos = getMousePos(canvas, ev);
             mousePX = pos.x;
             mousePY = pos.y;
-            // console.log(mousePX);
-            // console.log(mousePY);
-
-            // canvas.width=salam_width;
-            // img.width=salam_width;
-            // img.height=salam_height;
+           
             var salam_width = $("#salam").width();
             var salam_height = $("#salam").height();
 
@@ -355,6 +340,7 @@ $(document).ready(function () {
                 xpos: (XPosition / scalX),
                 ypos: (YPosition / scalY)
             });
+            console.log(points[i].xpos+" "+points[i].ypos);
             
             $("#salam").append(
                 $(`<div class="miniCanvas" id= ${i}  ></div>`)
