@@ -42,7 +42,7 @@ def setPoints(request, patient_id, image_id):
     if object.patient_imag.doctor_pati != request.user: return True
 
     if request.method == 'POST':
-        import ast
-        object.points_imag=ast.literal_eval(request.POST["points"])
+        import json
+        object.points_imag=[ [j["xpos"], j["ypos"]] for j in json.loads(request.body)["POINTS"] ]
         object.save()
     return HttpResponse('')
