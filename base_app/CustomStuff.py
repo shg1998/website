@@ -10,7 +10,7 @@ def overwriteTempDicom(image_data):
     import numpy as np
     import png
     import pydicom
-    from django.core.files.temp import TemporaryFile
+    from django.core.files.temp import NamedTemporaryFile
 
     # *************
     ds = pydicom.dcmread(image_data)
@@ -30,7 +30,7 @@ def overwriteTempDicom(image_data):
     # *************
 
     # Write the PNG file
-    png_file=TemporaryFile()
+    png_file=NamedTemporaryFile()
     w = png.Writer(shape[1], shape[0], greyscale=True)
     w.write(png_file, image_2d_scaled)
 
