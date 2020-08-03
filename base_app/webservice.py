@@ -16,6 +16,15 @@ def getImage(request, patient_id, image_id):
 
 
 @login_required
+def getImageList(request, patient_id):
+    objectList=ImagePatient.objects.filter(patient_imag=patient_id)
+    if objectList[0] and objectList[0].patient_imag.doctor_pati != request.user: return True
+
+    urlList=["http://127.0.0.1:8000"+ImClass.image_imag.url for ImClass in objectList]
+    return JsonResponse(json.dumps(urlList), safe=False)
+
+
+@login_required
 def getPoints(request, patient_id, image_id):
     object=ImagePatient.objects.filter(patient_imag=patient_id)[image_id]
     if object.patient_imag.doctor_pati != request.user: return True
@@ -33,7 +42,7 @@ def setPoints(request, patient_id, image_id):
     if object.patient_imag.doctor_pati != request.user: return True
 
     if request.method == 'POST':
-        import ast
-        object.points_imag=ast.literal_eval(request.POST["points"])
+        import json
+        object.points_imag=[ [j["xpos"], j["ypos"]] for j in json.loads(request.body)["POINTS"] ]
         object.save()
     return HttpResponse('')
