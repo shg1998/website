@@ -99,3 +99,4 @@ vevn/
 .vscode/*
 **/migrations/
 redis-6.0.6
+celerybeat-schedule
