@@ -10,7 +10,14 @@ $(document).ready(function () {
     var points = [];
     var scaleX = [];
     var scaley = [];
-    
+    var ClickedId;
+    var mousePosition;
+    var offset = [0, 0];
+    var div;
+    var isDown = false;
+    var IsRulerBtnActive=false;
+
+
     let fileName = "";
     var pois = [];
 
@@ -31,7 +38,8 @@ $(document).ready(function () {
     var Url_SetPoints = "http://127.0.0.1:8000/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
     var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
     var Url_GetPoint = 'http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
-    console.log(Url);
+
+
     // set image on canvas:
     img = new Image();
     img.src = Url;
@@ -39,7 +47,23 @@ $(document).ready(function () {
         ImgOnload();
         console.log(Url);
     };
-   
+
+    //for show the images on the left side of :
+
+    ShowImgOnTab();
+
+    $("#ruler").click(function (e) {
+
+        IsRulerBtnActive=true;
+        // var subHeight=-canvas.height+$('#salam').height();
+        // var subWidth=-canvas.width+$('#salam').width();
+        context.beginPath();
+        context.moveTo(points[0].xpos, points[0].ypos);
+        context.lineTo(points[1].xpos, points[1].ypos);
+        context.strokeStyle = "skyBlue";
+        context.stroke();
+
+    });
 
 
     //add filter and effects:
@@ -65,6 +89,7 @@ $(document).ready(function () {
         }
 
     });
+    
     $(".punctuation").click(function (e) {
         ProbeOnMainCanvas();
     });
@@ -85,19 +110,7 @@ $(document).ready(function () {
         download(canvas, newFileName);
     });
 
-    function download(canvas, filename) {
-        // init event
-        let ev;
-        //creat Link
-        const link = document.createElement("a");
-        //set Props:
-        link.download = filename;
-        link.href = canvas.toDataURL("image/jpg", 0.8);
-        //new mouse event
-        ev = new MouseEvent("click");
-        //dispatch ev
-        link.dispatchEvent(ev);
-    }
+
     //#endregion
 
 
@@ -122,8 +135,11 @@ $(document).ready(function () {
                 var scalY = currentHeight / imgHeight;
                 var scalX = currentWidth / imgWidth;
                 var color = "red";
-                var size = "7px";
-                for (let g = i; g < i+array.length; g++,i++) {
+                var size = "9px";
+
+                for (let g = 0; g < array.length; g++ , i++) {
+                    console.log(i);
+
                     points.push({
                         xpos: (array[g][0]),
                         ypos: (array[g][1])
@@ -139,7 +155,14 @@ $(document).ready(function () {
                             .css("cursor", "move")
                             .css("border-radius", "30px")
                     );
-                    
+                    document.getElementById(g).addEventListener('mousedown', function (e) {
+                        ClickedId = this.id;
+                        isDown = true;
+                        offset = [
+                            this.offsetLeft - e.clientX,
+                            this.offsetTop - e.clientY
+                        ];
+                    }, true);
                 }
 
             },
@@ -147,27 +170,49 @@ $(document).ready(function () {
                 alert(errMsg);
             }
         });
-
-
-
     });
+    //#region 
 
-    //get header by name
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+
+
+    document.addEventListener('mouseup', function () {
+        isDown = false;
+    }, true);
+
+    document.addEventListener('mousemove', function (event) {
+        event.preventDefault();
+        if (isDown) {
+            mousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+            var currentHeight = $("#canvas").height();
+            var currentWidth = $("#canvas").width();
+            var imgHeight = img.height;
+            var imgWidth = img.width;
+            var scalY = currentHeight / imgHeight;
+            var scalX = currentWidth / imgWidth;
+            points[ClickedId].xpos = Math.round((mousePosition.x + offset[0]) / scalX);
+            points[ClickedId].ypos = Math.round((mousePosition.y + offset[1]) / scalY);
+            if(IsRulerBtnActive){
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(img, 0, 0, img.width, img.height);
+                context.beginPath();
+                context.moveTo(points[0].xpos, points[0].ypos);
+                context.lineTo(points[1].xpos, points[1].ypos);
+                // ctx.lineTo(70, 100);
+                context.strokeStyle = "SkyBlue";
+                context.stroke();
             }
+           
+            console.log(points[ClickedId].xpos + " sss " + points[ClickedId].ypos);
+            document.getElementById(`${ClickedId}`).style.left = (mousePosition.x + offset[0]) + 'px';
+            document.getElementById(`${ClickedId}`).style.top = (mousePosition.y + offset[1]) + 'px';
         }
-        return cookieValue;
-    };
+    }, true);
+
+    //#endregion
+
 
     // set points
     $(".addPoints-btn").click(function (e) {
@@ -205,7 +250,6 @@ $(document).ready(function () {
 
     });
 
-
     $(window).resize(function () {
         var currentHeight = $("#canvas").height();
         var currentWidth = $("#canvas").width();
@@ -216,8 +260,6 @@ $(document).ready(function () {
 
 
         for (let i = 0; i < points.length; i++) {
-           // console.log(points[i].xpos + " " + i);
-
             $(`#${i}`)
                 .css("top", points[i].ypos * scalY + "px")
                 .css("left", points[i].xpos * scalX + "px");
@@ -298,15 +340,69 @@ $(document).ready(function () {
 
 
     //#region External Functions
+    function ShowImgOnTab() {
+        loop1:
+        for (let h1 = 0; h1 <= 10; h1++) {
+            var PageURL = "http://127.0.0.1:8000/patient/" + res[4] + "/" + h1 + "/pointsUpdate/"
+            function UrlExists(url, cb) {
+                jQuery.ajax({
+                    url: url,
+                    dataType: 'image',
+                    type: 'GET',
+                    complete: function (xhr) {
+                        if (typeof cb === 'function')
+                            cb.apply(this, [xhr.status]);
+                    }
+                });
+            }
+            UrlExists(`http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/`, function (status) {
+                if (status === 200) {
+                    $("#London").append(
+                        $(`<a  href=http://127.0.0.1:8000/patient/${res[4]}/${h1}/pointsUpdate/ >
+                        <img width=240px height=150px style=margin-left:-0.8rem;margin-top:20px;border-radius:5px;  src= http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/ class=${PageURL}></img> </a>`)
+                            .css("width", 240 + "px")
+                            .css("height", 150 + "px")
+                            .css("align-items", "center")
+                            .css("margin-left", 0 + "rem")
+                            .css("margin-top", 0 + "px")
+                            .css("border-radius", 3 + "px")
+                            .css("cursor", "move")
+                            .css("cursor", "pointer")
+                    );
+
+                }
+                else {
+                    // nothing to do actualy!!!
+                }
+            });
+        }
+    }
+    function download(canvas, filename) {
+        // init event
+        let ev;
+        //creat Link
+        const link = document.createElement("a");
+        //set Props:
+        link.download = filename;
+        link.href = canvas.toDataURL("image/jpg", 0.8);
+        //new mouse event
+        ev = new MouseEvent("click");
+        //dispatch ev
+        link.dispatchEvent(ev);
+    }
     function undo() {
         $(`#${i - j}`).removeAttr("style");
         j += 1;
         //console.log(j);
     }
+    //TODO  : Erase Context path
     function Erase() {
         for (var k = 0; k < points.length; k++) {
             $(`#${k}`).remove();
         }
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(img, 0, 0, img.width, img.height);
     }
     function ProbeOnMainCanvas() {
         //for PunctuationPunctuation on canvas!
@@ -314,7 +410,7 @@ $(document).ready(function () {
             var pos = getMousePos(canvas, ev);
             mousePX = pos.x;
             mousePY = pos.y;
-           
+
             var salam_width = $("#salam").width();
             var salam_height = $("#salam").height();
 
@@ -332,7 +428,7 @@ $(document).ready(function () {
 
 
             var color = "rgb(248, 248, 91)";
-            var size = "7px";
+            var size = "9px";
             XPosition = mousePX;
             YPosition = mousePY;
 
@@ -340,8 +436,8 @@ $(document).ready(function () {
                 xpos: (XPosition / scalX),
                 ypos: (YPosition / scalY)
             });
-            console.log(points[i].xpos+" "+points[i].ypos);
-            
+            console.log(points[i].xpos + " " + points[i].ypos);
+
             $("#salam").append(
                 $(`<div class="miniCanvas" id= ${i}  ></div>`)
                     .css("position", "absolute")
@@ -352,150 +448,20 @@ $(document).ready(function () {
                     .css("background-color", color)
                     .css("cursor", "move")
                     .css("border-radius", "30px")
-
             );
             i++;
 
-            // for (let i = 0; i < points.length; i++) {
-            //     console.log(points[i].xpos+" "+points[i].ypos);
-                
-                
-            // }
-
+            document.getElementById(i - 1).addEventListener('mousedown', function (e) {
+                ClickedId = this.id;
+                isDown = true;
+                offset = [
+                    this.offsetLeft - e.clientX,
+                    this.offsetTop - e.clientY
+                ];
+            }, true);
 
         });
     }
-    function salam() {
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
-        var $canvas = $("#canvas");
-        var canvasOffset = $canvas.offset();
-        var offsetX = canvasOffset.left;
-        var offsetY = canvasOffset.top;
-        var scrollX = $canvas.scrollLeft();
-        var scrollY = $canvas.scrollTop();
-        var cw = canvas.width;
-        var ch = canvas.height;
-
-        // flag to indicate a drag is in process
-        // and the last XY position that has already been processed
-        var isDown = false;
-        var lastX;
-        var lastY;
-
-        // the radian value of a full circle is used often, cache it
-        var PI2 = Math.PI * 2;
-
-        // variables relating to existing circles
-        var circles = [];
-        var stdRadius = 5;
-        var draggingCircle = -1;
-
-        // clear the canvas and redraw all existing circles
-        function drawAll() {
-            ctx.clearRect(0, 0, cw, ch);
-            for (var i = 0; i < circles.length; i++) {
-                var circle = circles[i];
-                ctx.beginPath();
-                ctx.arc(circle.x, circle.y, circle.radius, 0, PI2);
-                ctx.closePath();
-                ctx.fillStyle = circle.color;
-                ctx.fill();
-            }
-        }
-
-        function handleMouseDown(e) {
-            // tell the browser we'll handle this event
-            e.preventDefault();
-            e.stopPropagation();
-
-            // save the mouse position
-            // in case this becomes a drag operation
-            lastX = parseInt(e.clientX - offsetX);
-            lastY = parseInt(e.clientY - offsetY);
-
-            // hit test all existing circles
-            var hit = -1;
-            for (var i = 0; i < circles.length; i++) {
-                var circle = circles[i];
-                var dx = lastX - circle.x;
-                var dy = lastY - circle.y;
-                if (dx * dx + dy * dy < circle.radius * circle.radius) {
-                    hit = i;
-                }
-            }
-
-            // if no hits then add a circle
-            // if hit then set the isDown flag to start a drag
-            if (hit < 0) {
-                circles.push({ x: lastX, y: lastY, radius: stdRadius, color: randomColor() });
-                drawAll();
-            } else {
-                draggingCircle = circles[hit];
-                isDown = true;
-            }
-
-        }
-
-        function handleMouseUp(e) {
-            // tell the browser we'll handle this event
-            e.preventDefault();
-            e.stopPropagation();
-
-            // stop the drag
-            isDown = false;
-        }
-
-        function handleMouseMove(e) {
-
-            // if we're not dragging, just exit
-            if (!isDown) { return; }
-
-            // tell the browser we'll handle this event
-            e.preventDefault();
-            e.stopPropagation();
-
-            // get the current mouse position
-            mouseX = parseInt(e.clientX - offsetX);
-            mouseY = parseInt(e.clientY - offsetY);
-
-            // calculate how far the mouse has moved
-            // since the last mousemove event was processed
-            var dx = mouseX - lastX;
-            var dy = mouseY - lastY;
-
-            // reset the lastX/Y to the current mouse position
-            lastX = mouseX;
-            lastY = mouseY;
-
-            // change the target circles position by the 
-            // distance the mouse has moved since the last
-            // mousemove event
-            draggingCircle.x += dx;
-            draggingCircle.y += dy;
-
-            // redraw all the circles
-            drawAll();
-        }
-
-        // listen for mouse events
-        $("#canvas").mousedown(function (e) { handleMouseDown(e); });
-        $("#canvas").mousemove(function (e) { handleMouseMove(e); });
-        $("#canvas").mouseup(function (e) { handleMouseUp(e); });
-        $("#canvas").mouseout(function (e) { handleMouseUp(e); });
-
-        //////////////////////
-        // Utility functions
-
-        function randomColor() {
-            return ('#' + Math.floor(Math.random() * 16777215).toString(16));
-        }
-    }
-    // for (let i = 0; i < points.length; i++) {
-    //     document.getElementById(`#${i}`).onmousedown = function () {
-    //         console.log('salam');
-    //     }
-    // }
     function ImgOnload() {
         canvas.width = img.width;
         canvas.height = img.height;
@@ -510,6 +476,22 @@ $(document).ready(function () {
             y: evt.clientY - rect.top
         };
     }
+    //get header by name
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    };
 
     //#endregion
 });
