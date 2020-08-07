@@ -90,3 +90,12 @@ local_settings.py
 .env
 db.sqlite3
 media/
+
+venv/*
+vevn/
+.venv/
+.venv/*
+.vscode/
+.vscode/*
+**/migrations/
+redis-6.0.6

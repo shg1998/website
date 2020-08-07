@@ -19,7 +19,7 @@ class Patient(models.Model):
 class ImagePatient(models.Model):
     # dicomInfo_imag = models.TextField()
     image_imag = models.FileField(upload_to='')
-    points_imag = ArrayField(ArrayField(models.IntegerField(), size=2))
+    points_imag = ArrayField(ArrayField(models.FloatField(), size=2))
 
     patient_imag = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
