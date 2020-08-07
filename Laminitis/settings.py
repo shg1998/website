@@ -84,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Hossein_Laminitis',
         'USER': 'postgres',
-        'PASSWORD': '13771377Shg',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '5432',
     }
