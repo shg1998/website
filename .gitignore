@@ -98,3 +98,4 @@ vevn/
 .vscode/
 .vscode/*
 **/migrations/
+redis-6.0.6
