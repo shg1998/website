@@ -15,7 +15,7 @@ $(document).ready(function () {
     var offset = [0, 0];
     var div;
     var isDown = false;
-    var IsRulerBtnActive=false;
+    var IsRulerBtnActive = false;
 
 
     let fileName = "";
@@ -54,7 +54,7 @@ $(document).ready(function () {
 
     $("#ruler").click(function (e) {
 
-        IsRulerBtnActive=true;
+        IsRulerBtnActive = true;
         // var subHeight=-canvas.height+$('#salam').height();
         // var subWidth=-canvas.width+$('#salam').width();
         context.beginPath();
@@ -89,7 +89,7 @@ $(document).ready(function () {
         }
 
     });
-    
+
     $(".punctuation").click(function (e) {
         ProbeOnMainCanvas();
     });
@@ -194,7 +194,7 @@ $(document).ready(function () {
             var scalX = currentWidth / imgWidth;
             points[ClickedId].xpos = Math.round((mousePosition.x + offset[0]) / scalX);
             points[ClickedId].ypos = Math.round((mousePosition.y + offset[1]) / scalY);
-            if(IsRulerBtnActive){
+            if (IsRulerBtnActive) {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.drawImage(img, 0, 0, img.width, img.height);
                 context.beginPath();
@@ -204,7 +204,7 @@ $(document).ready(function () {
                 context.strokeStyle = "SkyBlue";
                 context.stroke();
             }
-           
+
             console.log(points[ClickedId].xpos + " sss " + points[ClickedId].ypos);
             document.getElementById(`${ClickedId}`).style.left = (mousePosition.x + offset[0]) + 'px';
             document.getElementById(`${ClickedId}`).style.top = (mousePosition.y + offset[1]) + 'px';
@@ -432,35 +432,39 @@ $(document).ready(function () {
             XPosition = mousePX;
             YPosition = mousePY;
 
-            points.push({
-                xpos: (XPosition / scalX),
-                ypos: (YPosition / scalY)
-            });
-            console.log(points[i].xpos + " " + points[i].ypos);
+            if ((XPosition / scalX) >= 0 && (YPosition / scalY) >= 0) {
 
-            $("#salam").append(
-                $(`<div class="miniCanvas" id= ${i}  ></div>`)
-                    .css("position", "absolute")
-                    .css("top", mousePY + "px")
-                    .css("left", mousePX + "px")
-                    .css("width", size)
-                    .css("height", size)
-                    .css("background-color", color)
-                    .css("cursor", "move")
-                    .css("border-radius", "30px")
-            );
-            i++;
+                points.push({
+                    xpos: (XPosition / scalX),
+                    ypos: (YPosition / scalY)
+                });
+                console.log(points[i].xpos + " " + points[i].ypos);
 
-            document.getElementById(i - 1).addEventListener('mousedown', function (e) {
-                ClickedId = this.id;
-                isDown = true;
-                offset = [
-                    this.offsetLeft - e.clientX,
-                    this.offsetTop - e.clientY
-                ];
-            }, true);
+                $("#salam").append(
+                    $(`<div class="miniCanvas" id= ${i}  ></div>`)
+                        .css("position", "absolute")
+                        .css("top", mousePY + "px")
+                        .css("left", mousePX + "px")
+                        .css("width", size)
+                        .css("height", size)
+                        .css("background-color", color)
+                        .css("cursor", "move")
+                        .css("border-radius", "30px")
+                );
+                i++;
 
+                document.getElementById(i - 1).addEventListener('mousedown', function (e) {
+                    ClickedId = this.id;
+                    isDown = true;
+                    offset = [
+                        this.offsetLeft - e.clientX,
+                        this.offsetTop - e.clientY
+                    ];
+                }, true);
+            }
         });
+
+
     }
     function ImgOnload() {
         canvas.width = img.width;
