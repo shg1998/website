@@ -16,6 +16,9 @@ $(document).ready(function () {
     var div;
     var isDown = false;
     var IsRulerBtnActive = false;
+    var ISDOWNN;
+    var curposX;
+    var curposY;
 
 
     let fileName = "";
@@ -173,6 +176,48 @@ $(document).ready(function () {
     });
     //#region 
 
+    // for manipulate brightness and contrast by dragging on canvas
+    $("#canvas").mousedown(function (e) {
+        console.log(e.pageX + " " + e.pageY);
+        curposX = e.pageX;
+        curposY = e.pageY;
+        ISDOWNN = true;
+    });
+    $("#canvas").mouseup(function () {
+        ISDOWNN = false;
+    });
+    $("#canvas").mousemove(function (e) {
+        if (ISDOWNN) {
+            if (e.pageX - curposX > 50) {
+                if (e.pageY - curposY < 50) {
+                    Caman("#canvas", img, function () {
+                        this.brightness((e.pageX - curposX) / 250).render();
+                    });
+                }
+            }
+             if(e.pageX-curposX<0){
+                if (e.pageY - curposY < 50) {
+                    Caman("#canvas", img, function () {
+                        this.brightness((e.pageX - curposX) / 250).render();
+                    });
+                }
+            }
+            if (e.pageY - curposY > 50) {
+                if (e.pageX - curposX < 50) {
+                    Caman("#canvas", img, function () {
+                        this.contrast((e.pageY - curposY) / 250).render();
+                    });
+                }
+            }
+            if(e.pageY - curposY < -50) {
+                if (e.pageX - curposX < 50) {
+                    Caman("#canvas", img, function () {
+                        this.contrast((e.pageY - curposY) / 250).render();
+                    });
+                }
+            }
+        }
+    });
 
 
     document.addEventListener('mouseup', function () {
