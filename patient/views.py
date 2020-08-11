@@ -4,6 +4,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView, ListView
 from .models import Patient, ImagePatient
 from base_app.CustomStuff import overwriteTempDicom
+from base_app.tasks import nnService
+import celery
 
 
 class PatientListView(LoginRequiredMixin, ListView):
@@ -88,7 +90,9 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
     def form_valid(self, form):
         form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
         form.instance.points_imag = []
-        return super().form_valid(form)
+        a = super().form_valid(form)
+        nnService.delay(self.object.image_imag.url, self.kwargs['patient_id'], len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])))
+        return a
 
     def test_func(self):
         patient = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
