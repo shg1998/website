@@ -80,7 +80,7 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
             from sys import getsizeof
             pngTempFile = overwriteTempDicom(request.FILES['image_imag'].file)
             request.FILES['image_imag'].file = pngTempFile
-            request.FILES['image_imag'].name = pngTempFile.name+"png"
+            request.FILES['image_imag'].name = pngTempFile.name+".png"
             request.FILES['image_imag'].size = getsizeof(pngTempFile)
 
         return super().post(request, *args, **kwargs)
