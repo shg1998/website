@@ -9,7 +9,7 @@ from .webservice import setPoints
 def nnService(image_url, patient_id, image_idx):
     
     # setPoint_service_url = "http://127.0.0.1:8000/webservice/setPoints/" + str(patient_id) + "/" + str(image_idx) + "/"
-    points = [ {'xpos': randrange(0, 500), 'ypos': randrange(0, 500)} for i in range(randrange(15))]
+    points = [[randrange(0, 500),randrange(0, 500)] for i in range(randrange(15))]    
     # setResult = requests.post(setPoint_service_url, data=load)
     # print(setResult.status_code)
     object = ImagePatient.objects.filter(patient_imag=patient_id)[image_idx]
