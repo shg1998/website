@@ -91,7 +91,8 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
         form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
         form.instance.points_imag = []
         a = super().form_valid(form)
-        nnService.delay(self.object.image_imag.url, self.kwargs['patient_id'], len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])))
+        print(len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])))
+        nnService.delay(self.object.image_imag.url, self.kwargs['patient_id'], len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"]))-1)
         return a
 
     def test_func(self):
