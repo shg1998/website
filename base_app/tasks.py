@@ -12,7 +12,7 @@ def nnService(image_url, patient_id, image_idx):
     points = [ {'xpos': randrange(0, 500), 'ypos': randrange(0, 500)} for i in range(randrange(15))]
     # setResult = requests.post(setPoint_service_url, data=load)
     # print(setResult.status_code)
-    print(f'picking {image_idx}th image')
     object = ImagePatient.objects.filter(patient_imag=patient_id)[image_idx]
     object.points_imag = points
+    object.save()
     return points
