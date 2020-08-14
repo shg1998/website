@@ -1,11 +1,3 @@
-def is_image(file):
-    import PIL
-    try:
-        PIL.Image.open(file)
-        return True
-    except PIL.UnidentifiedImageError:
-        return False
-
 def overwriteTempDicom(image_data):
     import numpy as np
     import png
