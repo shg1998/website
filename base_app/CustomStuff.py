@@ -1,31 +1,37 @@
 def overwriteTempDicom(image_data):
-    import numpy as np
-    import png
-    import pydicom
-    from django.core.files.temp import NamedTemporaryFile
 
     # *************
+    from django.core.files.temp import NamedTemporaryFile
+    import pydicom
+    import numpy as np
+    import cv2
+    import io
+
     ds = pydicom.dcmread(image_data)
 
-    shape = ds.pixel_array.shape
+    # get header data
+    fieldnames = ['SpecificCharacterSet', 'SOPClassUID', 'SOPInstanceUID', 'StudyDate', 'StudyTime', 'AccessionNumber',
+                  'Modality', 'ConversionType', 'ReferringPhysicianName', 'SeriesDescription', 'PatientName', 'PatientID',
+                  'PatientBirthDate', 'PatientSex', 'PatientAge', 'BodyPartExamined', 'ViewPosition', 'StudyInstanceUID',
+                  'SeriesInstanceUID', 'StudyID', 'SeriesNumber', 'InstanceNumber', 'PatientOrientation', 'SamplesperPixel',
+                  'PhotometricInterpretation', 'Rows', 'Columns', 'PixelSpacing', 'BitsAllocated', 'BitsStored', 'HighBit',
+                  'PixelRepresentation', 'LossyImageCompression', 'LossyImageCompressionMethod', 'PixelData']
+    header_data = []
+    for field in fieldnames:
+        try:
+            header_data.append(ds.data_element(field))
+        except KeyError:
+            header_data.append(None)
 
-    # Convert to float to avoid overflow or underflow losses.
+    # fix DICOM data
     image_2d = ds.pixel_array.astype(float)
-
-    # Rescaling grey scale between 0-255
-    image_2d_scaled = (np.maximum(image_2d, 0) / image_2d.max()) * 255.0
-
-    # Convert to uint
-    image_2d_scaled = np.uint8(image_2d_scaled)
-
-    image_data.close()
+    image_2d = (np.maximum(image_2d, 0) / image_2d.max()) * 255.0
+    image_2d = np.uint8(image_2d)
+    _, image_2d = cv2.imencode(".png", image_2d)
     # *************
+    image_data.close()
 
-    # Write the PNG file
     png_file=NamedTemporaryFile()
-    w = png.Writer(shape[1], shape[0], greyscale=True)
-    w.write(png_file, image_2d_scaled)
+    png_file.write(image_2d)
 
     return png_file
-
-
