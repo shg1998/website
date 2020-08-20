@@ -9,9 +9,11 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[1, 1, 1])
 res_to = 256
 number_of_label_points = 9
 model_path = ".\checkpoint_202008061041.pth.tar"
-image_address = ".\tests.py"
+image_address = "n.png"
 image_name = "test1"
-img = cv2.imread(image_address)
+# img = cv2.imread(image_address)
+with Image.open("n.png") as n:
+    
 img_x256 = cv2.resize(img, (res_to, res_to), cv2.INTER_CUBIC)
 cv2.imwrite('out/' + image_name + "_" + str(res_to) + ".jpg", img_x256)
 
