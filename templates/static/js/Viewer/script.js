@@ -89,7 +89,6 @@ $(document).ready(function () {
                     this.contrast(-5).render();
                 });
             }
-        }
 
     });
 
