@@ -28,13 +28,9 @@ def getImageList(request, patient_id):
 def getPoints(request, patient_id, image_id):
     object=ImagePatient.objects.filter(patient_imag=patient_id)[image_id]
     if object.patient_imag.doctor_pati != request.user: return True
-
-    # points=object.points_imag
-    points = []
-    for i in range(random.randrange(1,15)):
-        points.append([random.randrange(1,300), random.randrange(1,400)])
+   
+    points = object.points_imag   
     return JsonResponse(json.dumps(points), safe=False)
-    # return HttpResponse('<p>'+str(points)+'</p>')
 
 @login_required
 def setPoints(request, patient_id, image_id):
