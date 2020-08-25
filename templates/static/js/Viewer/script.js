@@ -43,6 +43,7 @@ $(document).ready(function () {
     var Url_GetPoint = 'http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
 
 
+    
     // set image on canvas:
     img = new Image();
     img.src = Url;
@@ -61,9 +62,16 @@ $(document).ready(function () {
         // var subHeight=-canvas.height+$('#salam').height();
         // var subWidth=-canvas.width+$('#salam').width();
         context.beginPath();
-        context.moveTo(points[0].xpos, points[0].ypos);
-        context.lineTo(points[1].xpos, points[1].ypos);
-        context.strokeStyle = "skyBlue";
+        context.moveTo(points[i - 2].xpos, points[i - 2].ypos);
+        context.lineTo(points[i - 1].xpos, points[i - 1].ypos);
+
+        context.strokeStyle = "green";
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(points[i].xpos, points[i].ypos);
+        context.lineTo(points[i + 1].xpos, points[i + 1].ypos);
+        context.strokeStyle = "green";
         context.stroke();
 
     });
@@ -89,6 +97,7 @@ $(document).ready(function () {
                     this.contrast(-5).render();
                 });
             }
+        }
 
     });
 
@@ -96,7 +105,7 @@ $(document).ready(function () {
         ProbeOnMainCanvas();
     });
 
-    //#region download operation
+    
     downloadBtn.addEventListener("click", () => {
         //get the file extension:
         const fileExt = fileName.slice(-4);
@@ -112,8 +121,6 @@ $(document).ready(function () {
         download(canvas, newFileName);
     });
 
-
-    //#endregion
 
 
     $(".Erase-btn").click(function (e) {
@@ -138,19 +145,18 @@ $(document).ready(function () {
                 var scalX = currentWidth / imgWidth;
                 var color = "red";
                 var size = "9px";
-
-                for (let g = 0; g < array.length; g++ , i++) {
-                    console.log(i);
-
+                for (let f = 0; f < array.length; f++) {
                     points.push({
-                        xpos: (array[g][0]),
-                        ypos: (array[g][1])
+                        xpos: (array[f][0]),
+                        ypos: (array[f][1])
                     });
+                }
+                for (let g = i; g <= i + array.length; g++) {
                     $("#salam").append(
                         $(`<div class="miniCanvas" id=${g}  ></div>`)
                             .css("position", "absolute")
-                            .css("top", array[g][1] * scalY + "px")
-                            .css("left", array[g][0] * scalX + "px")
+                            .css("top", points[g].ypos * scalY + "px")
+                            .css("left", points[g].xpos * scalX + "px")
                             .css("width", size)
                             .css("height", size)
                             .css("background-color", color)
@@ -165,6 +171,10 @@ $(document).ready(function () {
                             this.offsetTop - e.clientY
                         ];
                     }, true);
+                    // for set resizable
+                    if (g == i + array.length-1 ) {
+                        i = g+1 ;
+                    }
                 }
 
             },
@@ -194,7 +204,7 @@ $(document).ready(function () {
                     });
                 }
             }
-             if(e.pageX-curposX<0){
+            if (e.pageX - curposX < 0) {
                 if (e.pageY - curposY < 50) {
                     Caman("#canvas", img, function () {
                         this.brightness((e.pageX - curposX) / 250).render();
@@ -208,14 +218,16 @@ $(document).ready(function () {
                     });
                 }
             }
-            if(e.pageY - curposY < -50) {
+            if (e.pageY - curposY < -50) {
                 if (e.pageX - curposX < 50) {
                     Caman("#canvas", img, function () {
                         this.contrast((e.pageY - curposY) / 250).render();
                     });
                 }
             }
+
         }
+
     });
 
 
@@ -244,9 +256,16 @@ $(document).ready(function () {
                 context.beginPath();
                 context.moveTo(points[0].xpos, points[0].ypos);
                 context.lineTo(points[1].xpos, points[1].ypos);
+                context.moveTo(points[2].xpos, points[2].ypos);
+                context.lineTo(points[3].xpos, points[3].ypos);
                 // ctx.lineTo(70, 100);
-                context.strokeStyle = "SkyBlue";
+                context.strokeStyle = "green";
                 context.stroke();
+                // context.beginPath();
+                // context.moveTo(points[2].xpos, points[2].ypos);
+                // context.lineTo(points[3].xpos, points[3].ypos);
+                // context.strokeStyle = "skyBlue";
+                // context.stroke();
             }
 
             console.log(points[ClickedId].xpos + " sss " + points[ClickedId].ypos);
