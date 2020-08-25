@@ -44,7 +44,13 @@ def nnService(image_url, patient_id, image_idx):
     my_list_3 = [round(x.item()) for x in pred3[0, :]]
     my_list   = my_list_9[0:12] + my_list_3
 
+    
+
     points = [[my_list[2*i],my_list[2*i+1]] for i in range(int(len(my_list)/2))]
+    for point in points:
+        point[0]=float(img.size[0])/res_to*(point[0]+14)  
+        point[1]=float(img.size[1])/res_to*(point[1]+14)
+
     print(points)
     object = ImagePatient.objects.filter(patient_imag=patient_id)[image_idx]
     object.points_imag = points
