@@ -12,6 +12,16 @@
     <div class="sidebar-heading"> Workstation </div>
 
     <li class="nav-item">
+      <a class="nav-link" href="{% url 'patient-create' %}">
+        <span>+ New Patient</span></a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'user-patients-list' %}">
+        <span>All Patinets</span></a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
         <span>Hospitals</span>
       </a>
@@ -26,10 +36,7 @@
     </li>
 
 
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'user-patients-list' %}">
-        <span>All Patinets</span></a>
-    </li>
+
 
 
     <!-- Divider -->
