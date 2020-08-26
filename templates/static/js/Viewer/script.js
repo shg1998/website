@@ -38,9 +38,10 @@ $(document).ready(function () {
     // get WebService Unique url for each Patient
     var currentURL = document.URL;
     var res = currentURL.split("/");
-    var Url_SetPoints = "http://127.0.0.1:8000/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
-    var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
-    var Url_GetPoint = 'http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
+    console.log(1);
+    var Url_SetPoints = res[0]+"//"+res[2]+"/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
+    var Url =  res[0]+"//"+res[2]+ '/webservice/getImage/' + res[4] + "/" + res[5] + "/";
+    var Url_GetPoint = res[0]+"//"+res[2]+'/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
 
 
     
@@ -49,7 +50,7 @@ $(document).ready(function () {
     img.src = Url;
     img.onload = function () {
         ImgOnload();
-        console.log(Url);
+        // console.log(Url);
     };
 
     //for show the images on the left side of :
