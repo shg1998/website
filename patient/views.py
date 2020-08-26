@@ -88,15 +88,15 @@ class ImageAddView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin,
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
+        form.instance.patient_imag = Patient.objects.filter(pk=self.kwargs["pk"]).first()
         form.instance.points_imag = []
         a = super().form_valid(form)
-        print(len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])))
-        nnService.delay(self.object.image_imag.url, self.kwargs['patient_id'], len(ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"]))-1)
+        print(len(ImagePatient.objects.filter(patient_imag=self.kwargs["pk"])))
+        nnService.delay(self.object.image_imag.url, self.kwargs['pk'], len(ImagePatient.objects.filter(patient_imag=self.kwargs["pk"]))-1)
         return a
 
     def test_func(self):
-        patient = Patient.objects.filter(pk=self.kwargs["patient_id"]).first()
+        patient = Patient.objects.filter(pk=self.kwargs["pk"]).first()
         if patient.doctor_pati == self.request.user:
             return True
         return False
@@ -107,12 +107,12 @@ class ImageDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'patient/image_confirm_delete.html'
 
     def get_object(self):
-        object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[self.kwargs["image_id"]]
+        object=ImagePatient.objects.filter(patient_imag=self.kwargs["pk"])[self.kwargs["image_id"]]
         self.pk=object.pk
         return object
 
     def get_success_url(self):
-        return reverse('patient-detail', kwargs={'pk': self.kwargs["patient_id"]})
+        return reverse('patient-detail', kwargs={'pk': self.kwargs["pk"]})
 
     def test_func(self):
         patient = self.get_object().patient_imag
@@ -128,7 +128,7 @@ class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMi
     template_name = 'patient/edit_points_form.html'
 
     def get_object(self):
-        object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[0]
+        object=ImagePatient.objects.filter(patient_imag=self.kwargs["pk"])[0]
         self.pk=object.pk
         return object
 
