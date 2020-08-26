@@ -11,8 +11,8 @@ def getImage(request, patient_id, image_id):
     if object.patient_imag.doctor_pati != request.user: return True
 
     image_url=object.image_imag.url
-    return redirect("http://127.0.0.1:8000"+image_url)
-    # return HttpResponse("http://127.0.0.1:8000"+image_url)
+    return redirect("http://172.93.194.118"+image_url)
+    # return HttpResponse("http://172.93.194.118"+image_url)
 
 
 @login_required
@@ -20,7 +20,7 @@ def getImageList(request, patient_id):
     objectList=ImagePatient.objects.filter(patient_imag=patient_id)
     if objectList[0] and objectList[0].patient_imag.doctor_pati != request.user: return True
 
-    urlList=["http://127.0.0.1:8000"+ImClass.image_imag.url for ImClass in objectList]
+    urlList=["http://172.93.194.118"+ImClass.image_imag.url for ImClass in objectList]
     return JsonResponse(json.dumps(urlList), safe=False)
 
 
