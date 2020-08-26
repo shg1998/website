@@ -128,7 +128,7 @@ class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMi
     template_name = 'patient/edit_points_form.html'
 
     def get_object(self):
-        object=ImagePatient.objects.filter(patient_imag=self.kwargs["pk"])[0]
+        object=ImagePatient.objects.filter(patient_imag=self.kwargs["pk"])
         self.pk=object.pk
         return object
 
