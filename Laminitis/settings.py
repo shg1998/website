@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
+
+with open('/etc/config.json') as config_file:
+    config = json.load(config_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$d&yj990zy08^#i#+1*&33tuz4g_90-4@l#5p0$4@s6@9^acfb'
+SECRET_KEY = config["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.93.194.118']
 
 
 # Application definition
@@ -82,9 +86,9 @@ WSGI_APPLICATION = 'Laminitis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Hossein_Laminitis',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
+        'NAME': config["DB_NAME"],
+        'USER': config["DB_USER"],
+        'PASSWORD': config["DB_PASSWORD"],
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -126,6 +130,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
