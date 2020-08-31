@@ -18,6 +18,7 @@ class PatientListView(LoginRequiredMixin, ListView):
 
 class PatientDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Patient
+    template_name = 'patient/edit_points_form.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,24 +122,24 @@ class ImageDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
-    model = ImagePatient
-    fields = ['points_imag']
-    success_message = "points edited"
-    template_name = 'patient/edit_points_form.html'
-
-    def get_object(self):
-        object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[self.kwargs["image_id"]]
-        self.pk=object.pk
-        return object
-
-    def form_valid(self, form):
-        p=form.instance.points_imag
-        form.instance.points_imag = [[p[i-1][0], p[i][0]] for i in range(1,len(p),2)]
-        return super().form_valid(form)
-
-    def test_func(self):
-        patient = self.get_object().patient_imag
-        if patient.doctor_pati == self.request.user:
-            return True
-        return False
+# class PointsUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+#     model = ImagePatient
+#     fields = ['points_imag']
+#     success_message = "points edited"
+#     template_name = 'patient/edit_points_form.html'
+#
+#     def get_object(self):
+#         object=ImagePatient.objects.filter(patient_imag=self.kwargs["patient_id"])[self.kwargs["image_id"]]
+#         self.pk=object.pk
+#         return object
+#
+#     def form_valid(self, form):
+#         p=form.instance.points_imag
+#         form.instance.points_imag = [[p[i-1][0], p[i][0]] for i in range(1,len(p),2)]
+#         return super().form_valid(form)
+#
+#     def test_func(self):
+#         patient = self.get_object().patient_imag
+#         if patient.doctor_pati == self.request.user:
+#             return True
+#         return False
