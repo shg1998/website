@@ -408,7 +408,7 @@ $(document).ready(function () {
     function ShowImgOnTab() {
         loop1:
         for (let h1 = 0; h1 <= 10; h1++) {
-            var PageURL = "http://172.93.194.118/patiendt/" + res[4] + "/" + h1 + "/"
+            var PageURL = "http://172.93.194.118/patient/" + res[4] + "/" + h1 + "/"
             function UrlExists(url, cb) {
                 jQuery.ajax({
                     url: url,
