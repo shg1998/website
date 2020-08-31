@@ -28,11 +28,13 @@
 {#              </div>#}
 {#            </article>#}
 {#        {% endfor %}#}
+          </div>
+        </article>
         {% block viewer %} {% endblock %}
     {% else %}
         <h1>No image</h1>
+          </div>
+        </article>
     {% endif %}
 
-    </div>
-  </article>
 {% endblock content %}
