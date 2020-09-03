@@ -26,7 +26,7 @@
                 <td>{{ patient.description_pati }}</td>
                 <td>{{ patient.date_pati|date:"F d, Y" }}</td>
                 <td>{{ request.user }}</td>
-                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'patient-delete' patient.id %}">Delete</a>
+                <td><a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'patient-delete' patient.id %}">Delete</a></td>
               </tr>
           {% endfor %}
         </tbody>
