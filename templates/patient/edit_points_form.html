@@ -1,5 +1,30 @@
-{% extends 'patient/patient_detail.html' %}
-{% block viewer %}
+{#{% extends "base.html" %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% block content %}#}
+{#    <div class="content-section">#}
+{#        <form method="POST">#}
+{#            {% csrf_token %}#}
+{#            <article class="media content-section">#}
+{#                <div class="media-body">#}
+{#                    <img class="article-img2" src="{{imagepatient.image_imag.url}}">#}
+{#                </div>#}
+{#            </article>#}
+{#            <fieldset class="form-group">#}
+{#                <legend class="border-bottom mb-4">edit points</legend>#}
+{#                {{ form|crispy }}#}
+{#            </fieldset>#}
+{#            <div class="form-group">#}
+{#                <button class="btn btn-outline-info" id="salam1" type="submit">submit</button>#}
+{#            </div>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock content %}#}
+{##}
+{#{% load static %}#}
+
+
+{% extends 'base.html' %}
+{% block content %}
 <html lang="en">
 <script type="text/javascript" src="/static/js/Viewer/i18next.min.js"></script>
 <script type="text/javascript" src="/static/js/Viewer/i18nextXHRBackend.min.js"></script>
@@ -247,10 +272,10 @@
 
                 </div>
                 <br>
-                <!-- <a id="btn-Add" class="btn btn-primary"
+                <a id="btn-Add" class="btn btn-primary"
                     style="width: 65px; height: 50px; border-radius: 40%; margin-top: -1rem; margin-left: 1rem; border: 3px solid blue; direction: rtl;">
                     <i class="fa fa-plus" style="font-size:24px; margin-top: 0.5rem; color: white;"></i>
-                </a> -->
+                </a>
                 <!-- complete div for Tools section -->
                 <div id="Paris" class="tabcontent">
 
