@@ -41,6 +41,9 @@ class PatientCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         form.instance.doctor_pati = self.request.user
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse('user-patients-list')
+
 
 class PatientUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     model = Patient
@@ -57,12 +60,15 @@ class PatientUpdateView(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestM
             return True
         return False
 
+    def get_success_url(self):
+        return reverse('user-patients-list')
+
 
 class PatientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Patient
 
     def get_success_url(self):
-        return reverse('patient-create')
+        return reverse('user-patients-list')
 
     def test_func(self):
         patient = self.get_object()
