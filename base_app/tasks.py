@@ -19,7 +19,7 @@ def nnService(image_url, patient_id, image_idx):
     res_to = 256
     model_path9 = "base_app/checkpoint_202008061041.pth.tar"
     model_path3 = "base_app/checkpoint_3points_202008091543.pth.tar"
-    image_address = "http://127.0.0.1:8000"+image_url
+    image_address = "http://172.93.194.118"+image_url
     response = requests.get(image_address)
 
     model9  = torchvision.models.resnet18(num_classes=18).cpu()
