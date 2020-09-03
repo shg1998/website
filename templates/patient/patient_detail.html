@@ -28,6 +28,7 @@
           </a>
         </div>
       </div>
+      {% block viewer %} {% endblock %}
       <h2 class="article-title">{{ object.name_pati }}</h2>
       <p class="article-content">{{ object.description_pati }}</p>
 
@@ -36,7 +37,7 @@
           </div>
           
         </article>
-        {% block viewer %} {% endblock %}
+        
     {% else %}
         <h1>No image</h1>
           </div>
