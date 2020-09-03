@@ -103,3 +103,5 @@ celerybeat-schedule
 base_app/checkpoint_202008061041.pth.tar
 .idea/*
 base_app/checkpoint_3points_202008091543.pth.tar
+static/*
+nohup.out
