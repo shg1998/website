@@ -5,7 +5,7 @@
       <div class="article-metadata">
         <a class="mr-2" href="#">{{ object.doctor_pati }}</a>
         <small class="text-muted">{{ object.date_pati|date:"F d, Y" }}</small>
-        <small class="text-muted">{{ object.name_pati }}</small>
+        <small class="text-muted">&ensp;Case: {{ object.name_pati }}</small>
         <div>
           <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'patient-update' object.id %}">Update Informations
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
