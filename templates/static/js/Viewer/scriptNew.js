@@ -57,9 +57,9 @@ $(document).ready(function () {
    // get WebService Unique url for each Patient
    var currentURL = document.URL;
    var res = currentURL.split("/");
-   var Url_SetPoints = "http://127.0.0.1:8000/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
-   var Url = 'http://127.0.0.1:8000/webservice/getImage/' + res[4] + "/" + res[5] + "/";
-   var Url_GetPoint = 'http://127.0.0.1:8000/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
+   var Url_SetPoints = "http://172.93.194.118/webservice/setPoints/" + res[4] + "/" + res[5] + "/";
+   var Url = 'http://172.93.194.118/webservice/getImage/' + res[4] + "/" + res[5] + "/";
+   var Url_GetPoint = 'http://172.93.194.118/webservice/getPoints/' + res[4] + "/" + res[5] + "/";
 
 
 
@@ -411,7 +411,7 @@ $(document).ready(function () {
    });
 
    $("#btn-Add").click(function (e) {
-       link.href="http://127.0.0.1:8000/patient/"+res[4]+"/imageAdd/";
+       link.href="http://172.93.194.118/patient/"+res[4]+"/imageAdd/";
    });
    //#region for undo
    $("#undo").click(function (e) {
@@ -493,7 +493,7 @@ $(document).ready(function () {
    function ShowImgOnTab() {
        loop1:
        for (let h1 = 0; h1 <= 10; h1++) {
-           var PageURL = "http://127.0.0.1:8000/patient/" + res[4] + "/" + h1 + "/"
+           var PageURL = "http://172.93.194.118/patient/" + res[4] + "/" + h1 + "/"
            function UrlExists(url, cb) {
                jQuery.ajax({
                    url: url,
@@ -505,11 +505,11 @@ $(document).ready(function () {
                    }
                });
            }
-           UrlExists(`http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/`, function (status) {
+           UrlExists(`http://172.93.194.118/webservice/getImage/${res[4]}/${h1}/`, function (status) {
                if (status === 200) {
                    $("#London").append(
-                       $(`<a  href=http://127.0.0.1:8000/patient/${res[4]}/${h1}/ >
-                       <img width=240px height=150px style=margin-left:-0.8rem;margin-top:20px;border-radius:5px;  src= http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/ class=${PageURL}></img> </a>`)
+                       $(`<a  href=http://172.93.194.118/patient/${res[4]}/${h1}/ >
+                       <img width=240px height=150px style=margin-left:-0.8rem;margin-top:20px;border-radius:5px;  src= http://172.93.194.118/webservice/getImage/${res[4]}/${h1}/ class=${PageURL}></img> </a>`)
                            .css("width", 240 + "px")
                            .css("height", 150 + "px")
                            .css("align-items", "center")
