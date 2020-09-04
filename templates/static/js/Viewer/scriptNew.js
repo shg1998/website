@@ -493,7 +493,7 @@ $(document).ready(function () {
    function ShowImgOnTab() {
        loop1:
        for (let h1 = 0; h1 <= 10; h1++) {
-           var PageURL = "http://127.0.0.1:8000/patient/" + res[4] + "/" + h1 + "/pointsUpdate/"
+           var PageURL = "http://127.0.0.1:8000/patient/" + res[4] + "/" + h1 + "/"
            function UrlExists(url, cb) {
                jQuery.ajax({
                    url: url,
@@ -508,7 +508,7 @@ $(document).ready(function () {
            UrlExists(`http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/`, function (status) {
                if (status === 200) {
                    $("#London").append(
-                       $(`<a  href=http://127.0.0.1:8000/patient/${res[4]}/${h1}/pointsUpdate/ >
+                       $(`<a  href=http://127.0.0.1:8000/patient/${res[4]}/${h1}/ >
                        <img width=240px height=150px style=margin-left:-0.8rem;margin-top:20px;border-radius:5px;  src= http://127.0.0.1:8000/webservice/getImage/${res[4]}/${h1}/ class=${PageURL}></img> </a>`)
                            .css("width", 240 + "px")
                            .css("height", 150 + "px")
