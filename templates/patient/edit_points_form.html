@@ -23,8 +23,8 @@
 {#{% load static %}#}
 
 
-{% extends 'patient/patient_detail.html' %}
-{% block viewer %}
+{% extends 'base.html' %}
+{% block content %}
 <html lang="en">
 <script type="text/javascript" src="/static/js/Viewer/i18next.min.js"></script>
 <script type="text/javascript" src="/static/js/Viewer/i18nextXHRBackend.min.js"></script>
@@ -98,6 +98,9 @@
 
     <title>viewer!</title>
     <style>
+        h6{
+            display: inline;
+        }
         *,
         *:before,
         *:after {
@@ -210,7 +213,7 @@
 </head>
 
 <body style="background-color: black">
-    <div class="container" style="margin-top:25px">
+    <div class="container" style="margin-top:25px" id="aa">
         <button class="btn btn-primary  getPoints-btn col-md-3 " style="margin-left: -.3rem;">Detect Landmarks</button>
         <button class="btn btn-primary  addPoints-btn col-md-3" style="margin-left: -.5rem;">set Landmarks</button>
         <button class="btn btn-primary   col-md-3" style="margin-left: -.5rem;" id="revert-btn">Revert Effects &nbsp;
@@ -247,10 +250,18 @@
             rangeSlider();
         </script>
 
+
+        <div>
+            
+            <h6 class="col-md-6 col-sm-6 col-xs-6"  style="font-size: 15px; font-weight: bold; margin-left: -3rem;" id="_5.5">5.5</h6>
+            <h6 class="col-md-6 col-sm-6 col-xs-6" style="font-size: 15px; direction: rtl; top: -1.5rem; font-weight: bold;"  id="_11.5">11.5</h6>
+            
+        </div>
+
+
+
         <!-- vertical left side tab Menu Design -->
-        <div class="row" style="margin-left: 0.08rem; margin-top: 0.5rem; ">
-
-
+        <div class="row" style="margin-left: 0.08rem;  ">
             <div class="col-md-3 " id="WorkBench"
                 style="background-color: white ; border-radius: 6px; overflow-y: auto; ">
                 <div class="tab">
@@ -278,7 +289,6 @@
                 </a>
                 <!-- complete div for Tools section -->
                 <div id="Paris" class="tabcontent">
-
                     <!-- Annotation Section in tools tab-->
                     <h5>Anotations</h5>
                     <div class="Anotation">
@@ -343,7 +353,7 @@
                 </div>
                 <!-- complete div for Patient information section -->
                 <div id="Tokyo" class="tabcontent">
-                    <p class="article-content">{{ object.description_pati }}</p>
+                    <h2>Comming soon</h2>
                 </div>
             </div>
 
@@ -378,7 +388,7 @@
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
-        <script src="/static/js/Viewer/scriptNew.js"></script>
+        <script src="/static/js/Viewer/script.js"></script>
         <script src="/static/js/Viewer/jquery.js"></script>
         <script>
 
